@@ -8,7 +8,6 @@ Requires git for testing.
 
 ## Testing Environment
 * OS: Arch Linux
-* Kernel: x86_64 6.1.9-zen1-2-zen
 
 ## Dependencies
 * None

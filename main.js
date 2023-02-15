@@ -34,8 +34,6 @@ let simulator = new p5((sketch) => {
     landmassesTriangles = getPolygonTriangles(landmasses);
     countriesTriangles = getPolygonTriangles(countries);
 
-    //console.log(landmassesTriangles);
-
     /* Mouse transformations setup */
     offset = sketch.createVector(0, 0);
     window.addEventListener("wheel", event => {
@@ -63,8 +61,8 @@ let simulator = new p5((sketch) => {
       offset.y -= sketch.pmouseY - sketch.mouseY;
     }
 
-    //sketch.drawData(landmasses);
-    sketch.drawData(countries);
+    sketch.drawData(landmasses, 0, 150, 0);
+    sketch.drawData(countries, 255, 51, 204);
 
     nodes.forEach(node => node.draw(sketch));
 
@@ -89,7 +87,7 @@ let simulator = new p5((sketch) => {
   sketch.drawData = (data) => {
     if (data) {
       for (let i = 0; i < data.data.length; i++) {
-        sketch.fill(255);
+        sketch.fill(data.data[i].color[0], data.data[i].color[1], data.data[i].color[2]);
         sketch.beginShape();
 
         for (let j = 0; j < data.data[i].vertices.length; j++) {
@@ -101,6 +99,19 @@ let simulator = new p5((sketch) => {
         }
 
         sketch.endShape();
+
+        /* Draw vertices for testing purposes */
+        for (let j = 0; j < data.data[i].vertices.length; j++) {
+          let x = data.data[i].vertices[j][0];
+          let y = data.data[i].vertices[j][1];
+          let currentVertex = new Point(x, y);
+
+          sketch.textSize(15);
+          sketch.textAlign(sketch.CENTER);
+          sketch.text("(" + currentVertex.x + ", " + currentVertex.y + ")", currentVertex.x, currentVertex.y - 10);
+          sketch.fill(255)
+          sketch.circle(currentVertex.x, currentVertex.y, 10);
+        }
       }
     }
   }
