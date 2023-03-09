@@ -44,6 +44,12 @@ function setup() {
     simulation.countries.push(new Country(data, 200));
   }
 
+  /***** Declare war for testing *****/
+  let war = simulation.countries[0].ai.declareWar(simulation.countries[1]);
+  simulation.activeWars.push(war);
+
+  console.log(war);
+
   /* Mouse transformations setup */
   offset = createVector(0, 0);
   window.addEventListener("wheel", event => {
@@ -92,7 +98,7 @@ function draw() {
   }
 
   for (let country of simulation.countries) {
-    country.draw(offset, zoom);
+    country.draw();
   }
 
   /* Draw GUI */

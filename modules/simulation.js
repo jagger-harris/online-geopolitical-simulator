@@ -21,5 +21,10 @@ class Simulation {
     for (let country of this.countries) {
       country.ai.updatePopulation();
     }
+
+    /* Handle wars */
+    for (let war of this.activeWars) {
+      //console.log(war);
+    }
   }
 }

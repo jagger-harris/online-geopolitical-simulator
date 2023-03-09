@@ -4,6 +4,8 @@
 class AI {
   constructor(country) {
     this.country = country;
+    this.alliances = [this.country];
+    this.enemies = [];
   }
 
   updatePopulation() {
@@ -33,11 +35,50 @@ class AI {
     }
   }
 
-  declareWar() {
-    
+  declarePeace() {
+
+  }
+
+  declareWar(country) {
+    let attackers = [this.country];
+    let defenders = [country];
+
+    return new War(attackers, defenders);
   }
 
   trade() {
 
+  }
+}
+
+class Battle {
+  constructor(attackerNode, defenderNode) {
+    
+  }
+}
+
+class War {
+  constructor(attackers, defenders) {
+    this.attackers = attackers;
+    this.defenders = defenders;
+  }
+}
+
+class Alliance {
+  constructor(leader, countries) {
+    this.leader = leader;
+    this.countries = countries;
+  }
+
+  addCountry(country) {
+    this.countries.push(country);
+  }
+
+  removeCountry(country) {
+    let index = this.countries.indexOf(country);
+
+    if (index !== -1) {
+      this.countries.splice(index, 1);
+    }
   }
 }

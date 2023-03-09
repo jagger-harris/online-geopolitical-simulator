@@ -46,13 +46,27 @@ class Country {
     return Math.ceil(averageLifespan * 100) / 100;
   }
 
-  draw(offset, zoom) {
-    if (this.selected) {
+  draw() {
+    if (simulation.selectedCountry == this) {
       fill(100, 100, 255);
-    } else if (this.hover(offset, zoom)) {
-      fill(100);
     } else {
-      fill(0);
+      if (this.hover()) {
+        fill(100);
+      } else {
+        fill(0);
+      }
+      
+      if (simulation.selectedCountry) {
+        for (let i = 0; i < simulation.activeWars.length; i++) {
+          if (simulation.activeWars[i].attackers.includes(this) || simulation.activeWars[i].defenders.includes(this)) {
+            if (this.hover()) {
+              fill(255, 150, 150);
+            } else {
+              fill(255, 100, 100);
+            }
+          }
+        }
+      }
     }
 
     beginShape();
@@ -67,17 +81,17 @@ class Country {
 
     endShape();
 
-    if (this.selected) {
+    if (simulation.selectedCountry == this) {
       this.nodes.forEach(node => node.draw())
     }
   }
 
-  hover(offset) {
-    return this.mouseInsideCountry(offset, zoom);
+  hover() {
+    return this.mouseInsideCountry();
   }
 
   /* https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon */
-  mouseInsideCountry(offset, zoom) {
+  mouseInsideCountry() {
     let i;
     let j;
     let x = (mouseX - offset.x) / zoom;

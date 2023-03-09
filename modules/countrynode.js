@@ -20,7 +20,7 @@ class CountryNode {
   draw() {
     if (this.selected) {
       fill(230, 230, 230);
-    } else if (this.hover(offset, zoom)) {
+    } else if (this.hover()) {
       fill(150, 150, 255);
     } else {
       fill(100, 100, 255);
@@ -29,12 +29,12 @@ class CountryNode {
     ellipse(this.point.x, this.point.y, this.size, this.size);
   }
 
-  hover(offset) {
-    return this.mouseInsideNode(offset, zoom);
+  hover() {
+    return this.mouseInsideNode();
   }
 
   /* https://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle */
-  mouseInsideNode(offset, zoom) {
+  mouseInsideNode() {
     let mX = (mouseX - offset.x) / zoom;
     let mY = (mouseY - offset.y) / zoom;
     let circlePoint = new Point(mX, mY);
