@@ -8,7 +8,7 @@ class Landmass {
   }
 
   draw() {
-    fill(0);
+    fill(0, 0, 0, 0);
     beginShape();
 
     for (let i = 0; i < this.vertices.length; i++) {

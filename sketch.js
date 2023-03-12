@@ -21,11 +21,14 @@ let simulation;
 let zoom = 1;
 let offset;
 
+/* Other */
+let font;
+
 function preload() {
   countriesData = loadJSON("data/countries.json");
   landmassesData = loadJSON("data/landmasses.json");
 
-  loadFont("assets/Poppins-ExtraLight.ttf")
+  font = loadFont("assets/Poppins-ExtraLight.ttf")
 }
 
 function setup() {
@@ -44,11 +47,13 @@ function setup() {
     simulation.countries.push(new Country(data, 200));
   }
 
-  /***** Declare war for testing *****/
+  /**
+   * 
+   * Declare war for testing
+   * 
+   **/
   let war = simulation.countries[0].ai.declareWar(simulation.countries[1]);
   simulation.activeWars.push(war);
-
-  console.log(war);
 
   /* Mouse transformations setup */
   offset = createVector(0, 0);
@@ -69,8 +74,8 @@ function setup() {
 }
 
 function draw() {
-  background(0);
-  textFont("Poppins-ExtraLight");
+  background(0, 0, 50);
+  textFont(font);
   stroke(255);
   strokeWeight(2 / zoom);
 
@@ -93,13 +98,8 @@ function draw() {
   }
 
   /* Draw landmasses and countries */
-  for (let landmass of simulation.landmasses) {
-    landmass.draw();
-  }
-
-  for (let country of simulation.countries) {
-    country.draw();
-  }
+  simulation.landmasses.forEach(landmass => landmass.draw());
+  simulation.countries.forEach(country => country.draw());
 
   /* Draw GUI */
   drawGui();
@@ -107,13 +107,13 @@ function draw() {
 
 function mouseReleased() {
   for (let country of simulation.countries) {
-    country.selected = country.mouseInsideCountry(offset, zoom);
+    country.selected = country.mouseInsideCountry();
 
     if (country.selected) {
       simulation.selectedCountry = country;
 
       for (let node of country.nodes) {
-        node.selected = node.mouseInsideNode(offset, zoom);
+        node.selected = node.mouseInsideNode();
 
         if (node.selected) {
           simulation.selectedNode = node;
@@ -135,6 +135,7 @@ function drawGui() {
   fill(255);
   textSize(20);
   textAlign(LEFT);
+  text("FPS: " + frameRate().toFixed(0), 20, height * 0.012);
   text("Online Geopolitical Simulator - Jagger Harris 2023 - ALPHA", 20, height * 0.97);
   textAlign(CENTER, CENTER);
   textSize(40);

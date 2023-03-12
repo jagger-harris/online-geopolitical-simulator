@@ -69,17 +69,21 @@ class Country {
       }
     }
 
-    beginShape();
+    this.vertices.forEach(vertices => {
+      beginShape();
 
-    for (let i = 0; i < this.vertices.length; i++) {
-      let x = this.vertices[i][0];
-      let y = this.vertices[i][1];
-      let currentVertex = new Point(x, y);
+      vertices.forEach(vertice => {
+        let x = vertice[0];
+        let y = vertice[1];
+        let currentVertex = new Point(x, y);
+  
+        vertex(currentVertex.x, currentVertex.y);
+      })
 
-      vertex(currentVertex.x, currentVertex.y);
-    }
+      endShape();
+    })
 
-    endShape();
+    //console.log(simulation.selectedCountry)
 
     if (simulation.selectedCountry == this) {
       this.nodes.forEach(node => node.draw())
@@ -92,19 +96,21 @@ class Country {
 
   /* https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon */
   mouseInsideCountry() {
-    let i;
-    let j;
-    let x = (mouseX - offset.x) / zoom;
-    let y = (mouseY - offset.y) / zoom;
-    let point = new Point(x, y);
     let inside = false;
-    let vertices = this.vertices;
 
-    for (i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-      if (((vertices[i][1] > point.y) != (vertices[j][1] > point.y)) && (point.x < (vertices[j][0] - vertices[i][0]) * (point.y - vertices[i][1]) / (vertices[j][1] - vertices[i][1]) + vertices[i][0])) {
-        inside = !inside;
+    this.vertices.forEach(vertice => {
+      let i;
+      let j;
+      let x = (mouseX - offset.x) / zoom;
+      let y = (mouseY - offset.y) / zoom;
+      let point = new Point(x, y);
+
+      for (i = 0, j = vertice.length - 1; i < vertice.length; j = i++) {
+        if (((vertice[i][1] > point.y) != (vertice[j][1] > point.y)) && (point.x < (vertice[j][0] - vertice[i][0]) * (point.y - vertice[i][1]) / (vertice[j][1] - vertice[i][1]) + vertice[i][0])) {
+          inside = !inside;
+        }
       }
-    }
+    })
 
     return inside;
   }
@@ -114,32 +120,40 @@ class Country {
   }
 
   countryTriangles() {
-    let indices;
     let triangles = [];
     let flattenedData = [];
 
-    for (let i = 0; i < this.vertices.length; i++) {
-      let x = this.vertices[i][0];
-      let y = this.vertices[i][1];
+    /* Flatten array for earcut.js */
+    this.vertices.forEach(vertices => {
+      let flattenedVertices = [];
 
-      flattenedData.push(x);
-      flattenedData.push(y);
-    }
+      vertices.forEach(vertex => {
+        let x = vertex[0];
+        let y = vertex[1];
 
-    indices = earcut(flattenedData);
+        flattenedVertices.push(x);
+        flattenedVertices.push(y);
+      })
 
-    for (let i = 0; i < indices.length; i++) {
-      if (i % 3 == 0) {
-        let x1 = this.vertices[indices[i]][0];
-        let y1 = this.vertices[indices[i]][1];
-        let x2 = this.vertices[indices[i + 1]][0];
-        let y2 = this.vertices[indices[i + 1]][1];
-        let x3 = this.vertices[indices[i + 2]][0];
-        let y3 = this.vertices[indices[i + 2]][1];
+      flattenedData.push(flattenedVertices);
+    })
+
+    flattenedData.forEach(data => {
+      let indices = earcut(data);
+
+      for (let i = 0; i < indices.length; i++) {
+        if (i % 3 == 0) {
+          let x1 = data[indices[i]][0];
+          let y1 = data[indices[i]][1];
+          let x2 = data[indices[i + 1]][0];
+          let y2 = data[indices[i + 1]][1];
+          let x3 = data[indices[i + 2]][0];
+          let y3 = data[indices[i + 2]][1];
   
-        triangles.push(new Triangle(new Point(x1, y1), new Point(x2, y2), new Point(x3, y3)));
+          triangles.push(new Triangle(new Point(x1, y1), new Point(x2, y2), new Point(x3, y3)));
+        }
       }
-    }
+    })
 
     return triangles;
   }

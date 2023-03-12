@@ -3,7 +3,7 @@
  */
 class CountryNode {
   constructor(data, amount, point) {
-    this.size = 5;
+    this.size = 2;
     this.point = point;
     this.population = Math.floor(data.population / amount);
     this.fertilityRate = data.fertilityRate;
