@@ -24,7 +24,7 @@ class Simulation {
 
     /* Handle wars */
     for (let war of this.activeWars) {
-      //console.log(war);
+      
     }
   }
 }

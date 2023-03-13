@@ -22,19 +22,17 @@ let zoom = 1;
 let offset;
 
 /* Other */
-let font;
 
 function preload() {
   countriesData = loadJSON("data/countries.json");
   landmassesData = loadJSON("data/landmasses.json");
 
-  font = loadFont("assets/Poppins-ExtraLight.ttf")
+  loadFont("assets/Poppins-ExtraLight.ttf")
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  /* Create simulation */
   simulation = new Simulation(1, 1, 2020);
 
   /* Create landmasses from data */
@@ -44,12 +42,39 @@ function setup() {
 
   /* Create countries from data */
   for (let data of countriesData.countries) {
-    simulation.countries.push(new Country(data, 200));
+    simulation.countries.push(new Country(data));
+  }
+
+  /* Create nodes for all countries */
+  let totalNodeAmount = 10000;
+  let nodeAmount = [];
+  let countryAreas = [];
+  
+  for (let country of simulation.countries) {
+    let triangleAreas = CountryNode.getAreas(country.countryTriangles());
+    let totalArea = 0;
+
+    triangleAreas.forEach(ratio => {
+      totalArea += ratio;
+    })
+
+    countryAreas.push(totalArea);
+  }
+
+  let areaRatios = CountryNode.getAreaRatios(countryAreas);
+
+  for (let ratio of areaRatios) {
+    nodeAmount.push(Math.ceil(totalNodeAmount * ratio));
+  }
+
+  for (let i = 0; i < simulation.countries.length; i++) {
+    simulation.countries[i].nodes = simulation.countries[i].generateNodes(countriesData.countries[i], nodeAmount[i]);
+    simulation.countries[i].nodeAmount = nodeAmount[i];
   }
 
   /**
    * 
-   * Declare war for testing
+   * Declare war for testing *DELETE LATER*
    * 
    **/
   let war = simulation.countries[0].ai.declareWar(simulation.countries[1]);
@@ -75,7 +100,7 @@ function setup() {
 
 function draw() {
   background(0, 0, 50);
-  textFont(font);
+  textFont("Poppins-ExtraLight");
   stroke(255);
   strokeWeight(2 / zoom);
 
@@ -135,7 +160,7 @@ function drawGui() {
   fill(255);
   textSize(20);
   textAlign(LEFT);
-  text("FPS: " + frameRate().toFixed(0), 20, height * 0.012);
+  text("FPS: " + frameRate().toFixed(0), 20, height * 0.02);
   text("Online Geopolitical Simulator - Jagger Harris 2023 - ALPHA", 20, height * 0.97);
   textAlign(CENTER, CENTER);
   textSize(40);

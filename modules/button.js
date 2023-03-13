@@ -25,7 +25,7 @@ class Button {
     fill(255);
     textAlign(CENTER, CENTER);
     textSize(this.labelSize);
-    text(this.label, this.x + this.width * 0.5, this.y + this.height * 0.4);
+    text(this.label, this.x + this.width * 0.5, this.y + this.height * 0.55);
   }
 
   hover() {

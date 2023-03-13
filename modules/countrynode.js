@@ -49,37 +49,48 @@ class CountryNode {
     return false;
   }
 
+  static getAreas(trianglePoints) {
+    let triangleAreas = [];
+
+    /* Calculate area for each triangle to determine ratio for node placement */
+    for (let i = 0; i < trianglePoints.length; i++) {
+      let pointA = trianglePoints[i].a;
+      let pointB = trianglePoints[i].b;
+      let pointC = trianglePoints[i].c;
+      let lengthA = dist(pointA.x, pointA.y, pointB.x, pointB.y);
+      let lengthB = dist(pointC.x, pointC.y, pointB.x, pointB.y);
+      let lengthC = dist(pointC.x, pointC.y, pointA.x, pointA.y);;
+
+      /* Heron's formula https://en.wikipedia.org//wiki/Heron's_formula */
+      let s = (lengthA + lengthB + lengthC) * 0.5;
+      let area = Math.sqrt(s * (s - lengthA) * (s - lengthB) * (s - lengthC));
+
+      triangleAreas.push(area);
+    }
+
+    return triangleAreas;
+  }
+
+  static getAreaRatios(triangleAreas) {
+    const areaRatios = [];
+
+    /* Add up all areas and determine percentages */
+    let totalArea = 0;
+      
+    for (let i = 0; i < triangleAreas.length; i++) {
+      totalArea += triangleAreas[i];
+    }
+
+    for (let i = 0; i < triangleAreas.length; i++) {
+      areaRatios.push(triangleAreas[i] / totalArea);
+    }
+
+    return areaRatios;
+  }
+
   static create(data, amount, trianglePoints) {
     return Array.from(Array(amount), () => {
-      const triangleAreas = [];
-      const areaRatios = [];
-
-      /* Calculate area for each triangle to determine ratio for node placement */
-      for (let i = 0; i < trianglePoints.length; i++) {
-        let pointA = trianglePoints[i].a;
-        let pointB = trianglePoints[i].b;
-        let pointC = trianglePoints[i].c;
-        let lengthA = dist(pointA.x, pointA.y, pointB.x, pointB.y);
-        let lengthB = dist(pointC.x, pointC.y, pointB.x, pointB.y);
-        let lengthC = dist(pointC.x, pointC.y, pointA.x, pointA.y);;
-
-        /* Heron's formula https://en.wikipedia.org//wiki/Heron's_formula */
-        let s = (lengthA + lengthB + lengthC) * 0.5;
-        let area = Math.sqrt(s * (s - lengthA) * (s - lengthB) * (s - lengthC));
-
-        triangleAreas.push(area);
-      }
-
-      /* Add up all areas and determine percentages */
-      let totalArea = 0;
-      
-      for (let i = 0; i < triangleAreas.length; i++) {
-        totalArea += triangleAreas[i];
-      }
-
-      for (let i = 0; i < trianglePoints.length; i++) {
-        areaRatios.push(triangleAreas[i] / totalArea);
-      }
+      let areaRatios = CountryNode.getAreaRatios(CountryNode.getAreas(trianglePoints));
 
       /* Chose triangle based on area */
       let rTriangle = Math.random();

@@ -2,14 +2,14 @@
  * Country object that represents country data in the simulation
  */
 class Country {
-  constructor(data, nodeAmount) {
+  constructor(data) {
     this.id = data.id;
     this.name = data.name;
     this.vertices = data.vertices;
     this.ai = new AI(this);
     this.selected = false;
-    this.nodeAmount = nodeAmount;
-    this.nodes = this.generateNodes(data, nodeAmount);
+    this.nodeAmount = 0;
+    this.nodes = [];
   }
 
   population() {
@@ -55,18 +55,6 @@ class Country {
       } else {
         fill(0);
       }
-      
-      if (simulation.selectedCountry) {
-        for (let i = 0; i < simulation.activeWars.length; i++) {
-          if (simulation.activeWars[i].attackers.includes(this) || simulation.activeWars[i].defenders.includes(this)) {
-            if (this.hover()) {
-              fill(255, 150, 150);
-            } else {
-              fill(255, 100, 100);
-            }
-          }
-        }
-      }
     }
 
     this.vertices.forEach(vertices => {
@@ -83,10 +71,8 @@ class Country {
       endShape();
     })
 
-    //console.log(simulation.selectedCountry)
-
     if (simulation.selectedCountry == this) {
-      this.nodes.forEach(node => node.draw())
+      this.nodes.forEach(node => node.draw());
     }
   }
 
@@ -120,40 +106,41 @@ class Country {
   }
 
   countryTriangles() {
+    let indices;
     let triangles = [];
     let flattenedData = [];
 
-    /* Flatten array for earcut.js */
     this.vertices.forEach(vertices => {
       let flattenedVertices = [];
 
-      vertices.forEach(vertex => {
-        let x = vertex[0];
-        let y = vertex[1];
+      for (let i = 0; i < vertices.length; i++) {
+        let x = vertices[i][0];
+        let y = vertices[i][1];
 
         flattenedVertices.push(x);
         flattenedVertices.push(y);
-      })
+      }
 
       flattenedData.push(flattenedVertices);
     })
 
-    flattenedData.forEach(data => {
-      let indices = earcut(data);
+    for (let i = 0; i < this.vertices.length; i++) {
+      indices = earcut(flattenedData[i]);
 
-      for (let i = 0; i < indices.length; i++) {
-        if (i % 3 == 0) {
-          let x1 = data[indices[i]][0];
-          let y1 = data[indices[i]][1];
-          let x2 = data[indices[i + 1]][0];
-          let y2 = data[indices[i + 1]][1];
-          let x3 = data[indices[i + 2]][0];
-          let y3 = data[indices[i + 2]][1];
+      for (let j = 0; j < indices.length; j++) {
+        if (j % 3 == 0) {
+          let currentVertices = this.vertices[i];
+          let x1 = currentVertices[indices[j]][0];
+          let y1 = currentVertices[indices[j]][1];
+          let x2 = currentVertices[indices[j + 1]][0];
+          let y2 = currentVertices[indices[j + 1]][1];
+          let x3 = currentVertices[indices[j + 2]][0];
+          let y3 = currentVertices[indices[j + 2]][1];
   
           triangles.push(new Triangle(new Point(x1, y1), new Point(x2, y2), new Point(x3, y3)));
         }
       }
-    })
+    }
 
     return triangles;
   }
