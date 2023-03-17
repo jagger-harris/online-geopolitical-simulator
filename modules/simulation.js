@@ -7,7 +7,7 @@ class Simulation {
     this.selectedNode;
     this.speed = 500;
     this.landmasses = [];
-    this.countries = [];
+    this.countries = new Map();
     this.time = new Time(day, month, year);
     this.activeWars = [];
     this.pastWars = [];
@@ -18,13 +18,15 @@ class Simulation {
     this.time.advance();
 
     /* Update country data */
-    for (let country of this.countries) {
-      country.ai.updatePopulation();
+    for (let [key, value] of this.countries) {
+      value.ai.updatePopulation();
     }
 
     /* Handle wars */
-    for (let war of this.activeWars) {
-      
-    }
+    this.activeWars.forEach(war => {
+      war.battles.forEach(battle => {
+        battle.update();
+      })
+    })
   }
 }

@@ -42,7 +42,8 @@ function setup() {
 
   /* Create countries from data */
   for (let data of countriesData.countries) {
-    simulation.countries.push(new Country(data));
+    simulation.countries.set(data.id, new Country(data));
+    //simulation.countries.push(new Country(data));
   }
 
   /* Create nodes for all countries */
@@ -50,8 +51,8 @@ function setup() {
   let nodeAmount = [];
   let countryAreas = [];
   
-  for (let country of simulation.countries) {
-    let triangleAreas = CountryNode.getAreas(country.countryTriangles());
+  for (let [key, value] of simulation.countries) {
+    let triangleAreas = Country.getAreas(value.countryTriangles());
     let totalArea = 0;
 
     triangleAreas.forEach(ratio => {
@@ -61,15 +62,17 @@ function setup() {
     countryAreas.push(totalArea);
   }
 
-  let areaRatios = CountryNode.getAreaRatios(countryAreas);
+  let areaRatios = Country.getAreaRatios(countryAreas);
 
   for (let ratio of areaRatios) {
     nodeAmount.push(Math.ceil(totalNodeAmount * ratio));
   }
 
-  for (let i = 0; i < simulation.countries.length; i++) {
-    simulation.countries[i].nodes = simulation.countries[i].generateNodes(countriesData.countries[i], nodeAmount[i]);
-    simulation.countries[i].nodeAmount = nodeAmount[i];
+  let counter = 0;
+  for (let [key, value] of simulation.countries) {
+    value.nodes = value.generateNodes(countriesData.countries[counter], nodeAmount[counter]);
+    value.nodeAmount = nodeAmount[counter];
+    counter += 1;
   }
 
   /**
@@ -77,8 +80,10 @@ function setup() {
    * Declare war for testing *DELETE LATER*
    * 
    **/
-  let war = simulation.countries[0].ai.declareWar(simulation.countries[1]);
+  let war = simulation.countries.get("USA").ai.declareWar(simulation.countries.get("CAN"));
   simulation.activeWars.push(war);
+  simulation.activeWars[0].battles.push(new Battle(simulation.countries.get("USA").nodes[0], simulation.countries.get("CAN").nodes[0]))
+  //simulation.activeWars[0].newCountry(true, simulation.countries.get("CAN"));
 
   /* Mouse transformations setup */
   offset = createVector(0, 0);
@@ -131,13 +136,13 @@ function draw() {
 }
 
 function mouseReleased() {
-  for (let country of simulation.countries) {
-    country.selected = country.mouseInsideCountry();
+  for (let [key, value] of simulation.countries) {
+    value.selected = value.mouseInsideCountry();
 
-    if (country.selected) {
-      simulation.selectedCountry = country;
+    if (value.selected) {
+      simulation.selectedCountry = value;
 
-      for (let node of country.nodes) {
+      for (let node of value.nodes) {
         node.selected = node.mouseInsideNode();
 
         if (node.selected) {
@@ -168,6 +173,14 @@ function drawGui() {
   textAlign(LEFT);
   textSize(30);
   
+  text("Wars: ", width * 0.01, height * 0.4);
+  
+  for (let i = 0; i < simulation.activeWars.length; i++) {
+    let war = simulation.activeWars[i];
+
+    text(war.attackers[0].name + " vs. " + war.defenders[0].name, width * 0.01, height * (0.45 + (i * 0.05)))
+  }
+
   if (simulation.selectedCountry) {
     text("Country: " + simulation.selectedCountry.name, width * 0.75, height * 0.15);
     text("Population: " + simulation.selectedCountry.population(), width * 0.75, height * 0.2);
@@ -176,8 +189,10 @@ function drawGui() {
 
     if (simulation.selectedNode) {
       text("Node Population: " + simulation.selectedNode.population, width * 0.75, height * 0.4);
-      text("Node Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.75, height * 0.45);
-      text("Node Mortality Rate: " + simulation.selectedNode.mortalityRate, width * 0.75, height * 0.5);
+      text("Node Active Milt: " + simulation.selectedNode.activeMilitary, width * 0.75, height * 0.45);
+      //text("Node Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.75, height * 0.45);
+      text("Node Reserve Milt: " + simulation.selectedNode.militaryReserves, width * 0.75, height * 0.5);
+      //text("Node Mortality Rate: " + simulation.selectedNode.mortalityRate, width * 0.75, height * 0.5);
     }
   } else {
     text("Country: None", width * 0.75, windowHeight * 0.15);

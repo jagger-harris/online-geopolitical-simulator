@@ -3,6 +3,9 @@
     {
       "id": "USA",
       "name": "United States",
+      "population": 300000000,
+      "activeMilitary": 1000000,
+      "militaryReserves": 100000,
       "vertices": [
         [
           [
@@ -599,6 +602,9 @@
     {
       "id": "CAN",
       "name": "Canada",
+      "population": 60000000,
+      "activeMilitary": 100000,
+      "militaryReserves": 10000,
       "vertices": [
         [
           [
@@ -10977,8 +10983,8 @@
       ]
     },
     {
-      "id": "IRN",
-      "name": "Iran",
+      "id": "IRQ",
+      "name": "Iraq",
       "vertices": [
         [
           [
@@ -15163,7 +15169,7 @@
       ]
     },
     {
-      "id": "IND",
+      "id": "IDN",
       "name": "Indonesia",
       "vertices": [
         [

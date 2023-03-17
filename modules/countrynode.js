@@ -2,14 +2,18 @@
  * Object that is essential to simulation, country data are represented by this
  */
 class CountryNode {
-  constructor(data, amount, point) {
+  constructor(country, data, amount, point) {
     this.size = 2;
     this.point = point;
+    this.country = country;
     this.population = Math.floor(data.population / amount);
+    this.activeMilitary = Math.floor(data.activeMilitary / amount);
+    this.militaryReserves = Math.floor(data.militaryReserves / amount);
     this.fertilityRate = data.fertilityRate;
     this.lifespan = data.lifespan;
     this.mortalityRate = data.mortalityRate;
     this.selected = false;
+    this.captured = false;
     this.borderVertices = [
       new Point(this.point.x - 10, this.point.y),
       new Point(this.point.x + 10, this.point.y),
@@ -19,11 +23,11 @@ class CountryNode {
 
   draw() {
     if (this.selected) {
-      fill(230, 230, 230);
+      fill(210, 210, 210);
     } else if (this.hover()) {
-      fill(150, 150, 255);
+      this.captured ? fill(255, 150, 150) : fill(150, 150, 255);
     } else {
-      fill(100, 100, 255);
+      this.captured ? fill(255, 100, 100) : fill(100, 100, 255);
     }
 
     ellipse(this.point.x, this.point.y, this.size, this.size);
@@ -49,48 +53,9 @@ class CountryNode {
     return false;
   }
 
-  static getAreas(trianglePoints) {
-    let triangleAreas = [];
-
-    /* Calculate area for each triangle to determine ratio for node placement */
-    for (let i = 0; i < trianglePoints.length; i++) {
-      let pointA = trianglePoints[i].a;
-      let pointB = trianglePoints[i].b;
-      let pointC = trianglePoints[i].c;
-      let lengthA = dist(pointA.x, pointA.y, pointB.x, pointB.y);
-      let lengthB = dist(pointC.x, pointC.y, pointB.x, pointB.y);
-      let lengthC = dist(pointC.x, pointC.y, pointA.x, pointA.y);;
-
-      /* Heron's formula https://en.wikipedia.org//wiki/Heron's_formula */
-      let s = (lengthA + lengthB + lengthC) * 0.5;
-      let area = Math.sqrt(s * (s - lengthA) * (s - lengthB) * (s - lengthC));
-
-      triangleAreas.push(area);
-    }
-
-    return triangleAreas;
-  }
-
-  static getAreaRatios(triangleAreas) {
-    const areaRatios = [];
-
-    /* Add up all areas and determine percentages */
-    let totalArea = 0;
-      
-    for (let i = 0; i < triangleAreas.length; i++) {
-      totalArea += triangleAreas[i];
-    }
-
-    for (let i = 0; i < triangleAreas.length; i++) {
-      areaRatios.push(triangleAreas[i] / totalArea);
-    }
-
-    return areaRatios;
-  }
-
-  static create(data, amount, trianglePoints) {
+  static create(country, data, amount, trianglePoints) {
     return Array.from(Array(amount), () => {
-      let areaRatios = CountryNode.getAreaRatios(CountryNode.getAreas(trianglePoints));
+      let areaRatios = Country.getAreaRatios(Country.getAreas(trianglePoints));
 
       /* Chose triangle based on area */
       let rTriangle = Math.random();
@@ -108,7 +73,7 @@ class CountryNode {
       const y = (1 - Math.sqrt(r1)) * trianglePoints[areaCheck - 1].a.y + (Math.sqrt(r1) * (1 - r2)) * trianglePoints[areaCheck - 1].b.y + (Math.sqrt(r1) * r2) * trianglePoints[areaCheck - 1].c.y;
       const point = new Point(x, y);
 
-      return new this(data, amount, point);
+      return new this(country, data, amount, point);
     })
   }
 }

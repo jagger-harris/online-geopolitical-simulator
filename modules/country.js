@@ -3,13 +3,13 @@
  */
 class Country {
   constructor(data) {
-    this.id = data.id;
     this.name = data.name;
     this.vertices = data.vertices;
     this.ai = new AI(this);
     this.selected = false;
     this.nodeAmount = 0;
     this.nodes = [];
+    this.capturedNodes = [];
   }
 
   population() {
@@ -53,7 +53,35 @@ class Country {
       if (this.hover()) {
         fill(100);
       } else {
-        fill(0);
+        simulation.activeWars.forEach(war => {
+          let sameSide = false;
+          let inWar = false;
+          let selectedCountrySameWar = false;
+
+          if (war.attackers.includes(this) || war.defenders.includes(this)) {
+            inWar = true;
+          }
+
+          if (war.attackers.includes(simulation.selectedCountry)) {
+            selectedCountrySameWar = true;
+
+            if (war.attackers.includes(this)) {
+              sameSide = true;
+            }
+          } else if (war.defenders.includes(simulation.selectedCountry)) {
+            selectedCountrySameWar = true;
+
+            if (war.defenders.includes(this)) {
+              sameSide = true;
+            }
+          }
+
+          if (selectedCountrySameWar && inWar) {
+            sameSide ? fill(100, 100, 255) : fill(255, 100, 100);
+          } else {
+            fill(0);
+          }
+        })
       }
     }
 
@@ -102,7 +130,7 @@ class Country {
   }
 
   generateNodes(data, amount) {
-    return CountryNode.create(data, amount, this.countryTriangles());
+    return CountryNode.create(this, data, amount, this.countryTriangles());
   }
 
   countryTriangles() {
@@ -143,5 +171,44 @@ class Country {
     }
 
     return triangles;
+  }
+
+  static getAreas(trianglePoints) {
+    let triangleAreas = [];
+
+    /* Calculate area for each triangle to determine ratio for node placement */
+    for (let i = 0; i < trianglePoints.length; i++) {
+      let pointA = trianglePoints[i].a;
+      let pointB = trianglePoints[i].b;
+      let pointC = trianglePoints[i].c;
+      let lengthA = dist(pointA.x, pointA.y, pointB.x, pointB.y);
+      let lengthB = dist(pointC.x, pointC.y, pointB.x, pointB.y);
+      let lengthC = dist(pointC.x, pointC.y, pointA.x, pointA.y);;
+
+      /* Heron's formula https://en.wikipedia.org//wiki/Heron's_formula */
+      let s = (lengthA + lengthB + lengthC) * 0.5;
+      let area = Math.sqrt(s * (s - lengthA) * (s - lengthB) * (s - lengthC));
+
+      triangleAreas.push(area);
+    }
+
+    return triangleAreas;
+  }
+
+  static getAreaRatios(triangleAreas) {
+    const areaRatios = [];
+
+    /* Add up all areas and determine percentages */
+    let totalArea = 0;
+      
+    for (let i = 0; i < triangleAreas.length; i++) {
+      totalArea += triangleAreas[i];
+    }
+
+    for (let i = 0; i < triangleAreas.length; i++) {
+      areaRatios.push(triangleAreas[i] / totalArea);
+    }
+
+    return areaRatios;
   }
 }

@@ -66,20 +66,6 @@ class AI {
   }
 }
 
-class Battle {
-  constructor(attackerNode, defenderNode) {
-    
-  }
-}
-
-class War {
-  constructor(attackers, defenders) {
-    this.attackers = attackers;
-    this.defenders = defenders;
-    this.battles = [];
-  }
-}
-
 class Alliance {
   constructor(leader, countries) {
     this.leader = leader;
