@@ -35,10 +35,6 @@ class AI {
     }
   }
 
-  declarePeace() {
-
-  }
-
   declareWar(country) {
     /**
      * Reasons countries declare war:

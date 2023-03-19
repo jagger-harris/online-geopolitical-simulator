@@ -43,7 +43,6 @@ function setup() {
   /* Create countries from data */
   for (let data of countriesData.countries) {
     simulation.countries.set(data.id, new Country(data));
-    //simulation.countries.push(new Country(data));
   }
 
   /* Create nodes for all countries */
@@ -82,8 +81,6 @@ function setup() {
    **/
   let war = simulation.countries.get("USA").ai.declareWar(simulation.countries.get("CAN"));
   simulation.activeWars.push(war);
-  simulation.activeWars[0].battles.push(new Battle(simulation.countries.get("USA").nodes[0], simulation.countries.get("CAN").nodes[0]))
-  //simulation.activeWars[0].newCountry(true, simulation.countries.get("CAN"));
 
   /* Mouse transformations setup */
   offset = createVector(0, 0);
@@ -178,7 +175,7 @@ function drawGui() {
   for (let i = 0; i < simulation.activeWars.length; i++) {
     let war = simulation.activeWars[i];
 
-    text(war.attackers[0].name + " vs. " + war.defenders[0].name, width * 0.01, height * (0.45 + (i * 0.05)))
+    text(war.attackers[0].name + " vs. " + war.defenders[0].name + " | " + war.calculatePercentage(true) + ", " + war.calculatePercentage(false), width * 0.01, height * (0.45 + (i * 0.05)))
   }
 
   if (simulation.selectedCountry) {

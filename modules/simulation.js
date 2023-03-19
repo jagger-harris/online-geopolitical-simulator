@@ -24,9 +24,7 @@ class Simulation {
 
     /* Handle wars */
     this.activeWars.forEach(war => {
-      war.battles.forEach(battle => {
-        battle.update();
-      })
+      war.update();
     })
   }
 }
