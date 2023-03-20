@@ -21,16 +21,88 @@ let simulation;
 let zoom = 1;
 let offset;
 
-/* Other */
+/* DELETE LATER */
+let table;
+
+class CountryClass {
+  constructor(id, population, activeMilitary, reserveMilitary, fertilityRate, mortalityMaleAdults, mortalityFemaleAdults, mortalityInfants, lifespan, nuclearWeapons) {
+    this.id = id;
+    this.population = population;
+    this.activeMilitary = activeMilitary;
+    this.reserveMilitary = reserveMilitary;
+    this.fertilityRate = fertilityRate;
+    this.mortalityMaleAdults = mortalityMaleAdults;
+    this.mortalityFemaleAdults = mortalityFemaleAdults;
+    this.mortalityInfants = mortalityInfants;
+    this.lifespan = lifespan;
+    this.nuclearWeapons = nuclearWeapons;
+  }
+}
+
+class SavedCountryClass {
+  constructor(id, name, population, activeMilitary, reserveMilitary, fertilityRate, mortalityMaleAdults, mortalityFemaleAdults, mortalityInfants, lifespan, nuclearWeapons, vertices) {
+    this.id = id;
+    this.name = name;
+    this.population = population;
+    this.activeMilitary = activeMilitary;
+    this.reserveMilitary = reserveMilitary;
+    this.fertilityRate = fertilityRate;
+    this.mortalityMaleAdults = mortalityMaleAdults;
+    this.mortalityFemaleAdults = mortalityFemaleAdults;
+    this.mortalityInfants = mortalityInfants;
+    this.lifespan = lifespan;
+    this.nuclearWeapons = nuclearWeapons;
+    this.vertices = vertices;
+  }
+}
+
 
 function preload() {
   countriesData = loadJSON("data/countries.json");
   landmassesData = loadJSON("data/landmasses.json");
 
-  loadFont("assets/Poppins-ExtraLight.ttf")
+  table = loadTable("data/countrydata.csv");
+
+  loadFont("assets/Poppins-ExtraLight.ttf");
 }
 
 function setup() {
+  /* DELETE LATER */
+  let newCountriesData = [];
+
+  //console.log(table.rows);
+
+  for (let data of table.rows) {
+    let dataId = data.arr[1];
+    let dataPopulation = data.arr[2];
+    let dataActiveMilitary = data.arr[3];
+    let dataReserveMilitary = data.arr[4];
+    let dataFertilityRate = data.arr[5];
+    let dataMale = data.arr[6];
+    let dataFemale = data.arr[7];
+    let dataInfant = data.arr[8];
+    let dataLifespan = data.arr[9];
+    let dataNukes = data.arr[10];
+
+    let newCountry = new CountryClass(dataId, dataPopulation, dataActiveMilitary, dataReserveMilitary, dataFertilityRate, dataMale, dataFemale, dataInfant, dataLifespan, dataNukes)
+    
+    for (let data of countriesData.countries) {
+      if (data.id == newCountry.id) {
+        newCountriesData.push(new SavedCountryClass(newCountry.id, data.name, newCountry.population, newCountry.activeMilitary, newCountry.reserveMilitary, newCountry.fertilityRate, newCountry.mortalityMaleAdults, newCountry.mortalityFemaleAdults, newCountry.mortalityInfants, newCountry.lifespan, newCountry.nuclearWeapons, data.vertices));
+      }
+    }
+  }
+
+  class Wow {
+    constructor(countries) {
+      this.countries = countries;
+    }
+  }
+
+  let wow = new Wow(newCountriesData);
+
+  //saveJSON(wow, "countries.json")
+  
   createCanvas(windowWidth, windowHeight);
 
   simulation = new Simulation(1, 1, 2020);
@@ -188,8 +260,8 @@ function drawGui() {
       text("Node Population: " + simulation.selectedNode.population, width * 0.75, height * 0.4);
       text("Node Active Milt: " + simulation.selectedNode.activeMilitary, width * 0.75, height * 0.45);
       //text("Node Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.75, height * 0.45);
-      text("Node Reserve Milt: " + simulation.selectedNode.militaryReserves, width * 0.75, height * 0.5);
-      //text("Node Mortality Rate: " + simulation.selectedNode.mortalityRate, width * 0.75, height * 0.5);
+      //text("Node Reserve Milt: " + simulation.selectedNode.reserveMilitary, width * 0.75, height * 0.5);
+      text("Node Male Mortality Rate: " + simulation.selectedNode.mortalityMaleAdults, width * 0.75, height * 0.5);
     }
   } else {
     text("Country: None", width * 0.75, windowHeight * 0.15);

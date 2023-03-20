@@ -26,11 +26,19 @@ class AI {
       }
 
       /* Decay population statistically */
-      percentageChance = (node.population / 1000) * (node.mortalityRate / 8766);
+      //let percentageChanceMaleDeath = (node.population / 2000) * (node.mortalityMaleAdults / 8766);
+      let averageMaleDeaths = (node.mortalityMaleAdults / 2000) * (node.population * 0.5) / 8766;
+      let averageFemaleDeaths = (node.mortalityFemaleAdults / 2000) * (node.population * 0.5) / 8766;
       random = Math.random();
 
-      if (random < percentageChance) {
-        node.population -= Math.round(percentageChance);
+      if (random < node.mortalityMaleAdults / 2000) {
+        node.population -= Math.round(averageMaleDeaths);
+      }
+
+      random = Math.random();
+
+      if (random < node.mortalityFemaleAdults / 2000) {
+        node.population -= Math.round(averageFemaleDeaths);
       }
     }
   }
