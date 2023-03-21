@@ -26,7 +26,6 @@ class AI {
       }
 
       /* Decay population statistically */
-      //let percentageChanceMaleDeath = (node.population / 2000) * (node.mortalityMaleAdults / 8766);
       let averageMaleDeaths = (node.mortalityMaleAdults / 2000) * (node.population * 0.5) / 8766;
       let averageFemaleDeaths = (node.mortalityFemaleAdults / 2000) * (node.population * 0.5) / 8766;
       random = Math.random();

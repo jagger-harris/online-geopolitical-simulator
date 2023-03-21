@@ -21,91 +21,28 @@ let simulation;
 let zoom = 1;
 let offset;
 
-/* DELETE LATER */
-let table;
-
-class CountryClass {
-  constructor(id, population, activeMilitary, reserveMilitary, fertilityRate, mortalityMaleAdults, mortalityFemaleAdults, mortalityInfants, lifespan, nuclearWeapons) {
-    this.id = id;
-    this.population = population;
-    this.activeMilitary = activeMilitary;
-    this.reserveMilitary = reserveMilitary;
-    this.fertilityRate = fertilityRate;
-    this.mortalityMaleAdults = mortalityMaleAdults;
-    this.mortalityFemaleAdults = mortalityFemaleAdults;
-    this.mortalityInfants = mortalityInfants;
-    this.lifespan = lifespan;
-    this.nuclearWeapons = nuclearWeapons;
-  }
-}
-
-class SavedCountryClass {
-  constructor(id, name, population, activeMilitary, reserveMilitary, fertilityRate, mortalityMaleAdults, mortalityFemaleAdults, mortalityInfants, lifespan, nuclearWeapons, vertices) {
-    this.id = id;
-    this.name = name;
-    this.population = population;
-    this.activeMilitary = activeMilitary;
-    this.reserveMilitary = reserveMilitary;
-    this.fertilityRate = fertilityRate;
-    this.mortalityMaleAdults = mortalityMaleAdults;
-    this.mortalityFemaleAdults = mortalityFemaleAdults;
-    this.mortalityInfants = mortalityInfants;
-    this.lifespan = lifespan;
-    this.nuclearWeapons = nuclearWeapons;
-    this.vertices = vertices;
-  }
-}
-
+/**
+ * Menu and GUI system
+ */
+let clockButton;
+let menuButtons = [];
+let showCountryMenu = false;
+let showNodeMenu = false;
+let showWarMenu = false;
 
 function preload() {
   countriesData = loadJSON("data/countries.json");
   landmassesData = loadJSON("data/landmasses.json");
-
-  table = loadTable("data/countrydata.csv");
-
-  loadFont("assets/Poppins-ExtraLight.ttf");
 }
 
 function setup() {
-  /* DELETE LATER */
-  let newCountriesData = [];
-
-  //console.log(table.rows);
-
-  for (let data of table.rows) {
-    let dataId = data.arr[1];
-    let dataPopulation = data.arr[2];
-    let dataActiveMilitary = data.arr[3];
-    let dataReserveMilitary = data.arr[4];
-    let dataFertilityRate = data.arr[5];
-    let dataMale = data.arr[6];
-    let dataFemale = data.arr[7];
-    let dataInfant = data.arr[8];
-    let dataLifespan = data.arr[9];
-    let dataNukes = data.arr[10];
-
-    let newCountry = new CountryClass(dataId, dataPopulation, dataActiveMilitary, dataReserveMilitary, dataFertilityRate, dataMale, dataFemale, dataInfant, dataLifespan, dataNukes)
-    
-    for (let data of countriesData.countries) {
-      if (data.id == newCountry.id) {
-        newCountriesData.push(new SavedCountryClass(newCountry.id, data.name, newCountry.population, newCountry.activeMilitary, newCountry.reserveMilitary, newCountry.fertilityRate, newCountry.mortalityMaleAdults, newCountry.mortalityFemaleAdults, newCountry.mortalityInfants, newCountry.lifespan, newCountry.nuclearWeapons, data.vertices));
-      }
-    }
-  }
-
-  class Wow {
-    constructor(countries) {
-      this.countries = countries;
-    }
-  }
-
-  let wow = new Wow(newCountriesData);
-
-  //saveJSON(wow, "countries.json")
-  
   createCanvas(windowWidth, windowHeight);
 
-  simulation = new Simulation(1, 1, 2020);
+  simulation = new Simulation(1, 1, 2021);
+
+  createClockButton();
+  createSpeedButtons();
+  createMenuButtons();
 
   /* Create landmasses from data */
   for (let data of landmassesData.landmasses) {
@@ -174,7 +111,6 @@ function setup() {
 
 function draw() {
   background(0, 0, 60);
-  textFont("Poppins-ExtraLight");
   stroke(255);
   strokeWeight(2 / zoom);
 
@@ -200,7 +136,8 @@ function draw() {
   simulation.landmasses.forEach(landmass => landmass.draw());
   simulation.countries.forEach(country => country.draw());
 
-  /* Draw GUI */
+  /* Draw and update GUI */
+  clockButton.html(simulation.time.toString());
   drawGui();
 }
 
@@ -226,74 +163,197 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
+function setDefaultButtonLooks(button) {
+  button.size(50, 50);
+  button.style("font-size", "2em");
+  button.style("border", "2px solid white");
+  button.style("background-color", "black");
+  button.style("color", "white");
+  button.mouseOver(() => {
+    button.style("background-color", "rgb(100, 100, 100)");
+  });
+  button.mouseOut(() => {
+    button.style("background-color", "black");
+  })
+}
+
+function createClockButton() {
+  clockButton = createButton("");
+  setDefaultButtonLooks(clockButton);
+  clockButton.size(320, 50);
+  clockButton.position(width * 0.4, height * 0.02);
+}
+
+function createSpeedButtons() {
+  let speedButtons = [];
+
+  for (let i = 0; i < 5; i++) {
+    let button = createButton(i + 1);
+    
+    setDefaultButtonLooks(button);
+    button.position(width * 0.933 + (i * 60) - 180, height * 0.02);
+    button.mouseClicked(() => {
+      simulation.changeSpeed(i);
+      button.style("background-color", "rgb(150, 150, 150)");
+    });
+    
+    speedButtons.push(button);
+  }
+}
+
+function createMenuButtons() {
+  for (let i = 0; i < 4; i++) {
+    let button = createButton("");
+
+    if (i != 0) {
+      button.hidden = true;
+      button.hide();
+    }
+
+    setDefaultButtonLooks(button);
+    button.position(width * 0.01, height * (0.02 + (i * 0.07)));
+
+    menuButtons.push(button);
+  }
+
+  let menuButton = menuButtons[0];
+  menuButton.html("≡");
+  menuButton.mouseClicked(() => {
+    for (let i = 0; i < menuButtons.length; i++) {
+      let button = menuButtons[i];
+
+      if (i != 0) {
+        if (button.hidden) {
+          button.hidden = false;
+          button.show();
+        } else {
+          button.hidden = true;
+          showCountryMenu = false;
+          showNodeMenu = false;
+          showWarMenu = false;
+          button.hide();
+        }
+      }
+    }
+
+    menuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+  
+  let countryMenuButton = menuButtons[1];
+  countryMenuButton.html("🏳️");
+  countryMenuButton.mouseClicked(() => {
+    showCountryMenu = !showCountryMenu;
+    showNodeMenu = false;
+    showWarMenu = false;
+    countryMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+
+  let nodeMenuButton = menuButtons[2];
+  nodeMenuButton.html("🔘");
+  nodeMenuButton.mouseClicked(() => {
+    showNodeMenu = !showNodeMenu;
+    showCountryMenu = false;
+    showWarMenu = false;
+    nodeMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+
+  let warMenuButton = menuButtons[3];
+  warMenuButton.html("⚔️");
+  warMenuButton.mouseClicked(() => {
+    showWarMenu = !showWarMenu;
+    showCountryMenu = false;
+    showNodeMenu = false;
+    warMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+}
+
 function drawGui() {
   /* Reset Matrix for GUI */
   resetMatrix();
 
-  strokeWeight(2);
+  noStroke();
   fill(255);
   textSize(20);
   textAlign(LEFT);
-  text("FPS: " + frameRate().toFixed(0), 20, height * 0.02);
   text("Online Geopolitical Simulator - Jagger Harris 2023 - ALPHA", 20, height * 0.97);
-  textAlign(CENTER, CENTER);
-  textSize(40);
-  text(simulation.time.toString(), width * 0.5, height * 0.05);
-  textAlign(LEFT);
+  textAlign(LEFT, CENTER);
   textSize(30);
-  
-  text("Wars: ", width * 0.01, height * 0.4);
-  
-  for (let i = 0; i < simulation.activeWars.length; i++) {
-    let war = simulation.activeWars[i];
 
-    text(war.attackers[0].name + " vs. " + war.defenders[0].name + " | " + war.calculatePercentage(true) + ", " + war.calculatePercentage(false), width * 0.01, height * (0.45 + (i * 0.05)))
-  }
+  /* Menus */
+  drawCountryMenu();
+  drawNodeMenu();
+  drawWarMenu();
+}
 
-  if (simulation.selectedCountry) {
-    text("Country: " + simulation.selectedCountry.name, width * 0.75, height * 0.15);
-    text("Population: " + simulation.selectedCountry.population(), width * 0.75, height * 0.2);
-    text("Fertility Rate: " + simulation.selectedCountry.fertilityRate(), width * 0.75, height * 0.25);
-    text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.75, height * 0.3);
+function drawCountryMenu() {
+  if (showCountryMenu) {
+    stroke(255);
+    strokeWeight(2);
+    fill(0);
+    rect(width * 0.044, height * 0.092, 320, 420);
+    noStroke();
+    fill(255);
+    textSize(22);
+    textAlign(LEFT);
+    text("Country Menu", width * 0.048, height * 0.12);
 
-    if (simulation.selectedNode) {
-      text("Node Population: " + simulation.selectedNode.population, width * 0.75, height * 0.4);
-      text("Node Active Milt: " + simulation.selectedNode.activeMilitary, width * 0.75, height * 0.45);
-      //text("Node Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.75, height * 0.45);
-      //text("Node Reserve Milt: " + simulation.selectedNode.reserveMilitary, width * 0.75, height * 0.5);
-      text("Node Male Mortality Rate: " + simulation.selectedNode.mortalityMaleAdults, width * 0.75, height * 0.5);
+    if (simulation.selectedCountry) {
+      text(simulation.selectedCountry.name, width * 0.048, height * 0.16);
+      text("Population: " + simulation.selectedCountry.population().toLocaleString(), width * 0.048, height * 0.19);
+      text("Fertility Rate: " + simulation.selectedCountry.fertilityRate(), width * 0.048, height * 0.22);
+      text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.048, height * 0.25);
+    } else {
+      text("No Selected Country", width * 0.048, height * 0.16);
     }
-  } else {
-    text("Country: None", width * 0.75, windowHeight * 0.15);
   }
+}
 
-  let buttons = [];
+function drawNodeMenu() {
+  if (showNodeMenu) {
+    stroke(255);
+    strokeWeight(2);
+    fill(0);
+    rect(width * 0.044, height * 0.162, 320, 420);
+    noStroke();
+    fill(255);
+    textSize(22);
+    textAlign(LEFT);
 
-  for (let i = 0; i < 5; i++) {
-    buttons.push(new Button(width * 0.5 + (i * 80) - 180, height * 0.09, 50, 50, i + 1, 40));
+    text("Node Menu", width * 0.048, height * 0.19);
+
+    if (simulation.selectedCountry) {
+      if (simulation.selectedNode) {
+        text("Population: " + simulation.selectedNode.population.toLocaleString(), width * 0.048, height * 0.23);
+        text("Active Miltitary: " + simulation.selectedNode.activeMilitary.toLocaleString(), width * 0.048, height * 0.26);
+        text("Male Mortality Rate: " + simulation.selectedNode.mortalityMaleAdults, width * 0.048, height * 0.29);
+      } else {
+        text("No Selected Node", width * 0.048, height * 0.23);
+      }
+    } else {
+      text("No Selected Country", width * 0.048, height * 0.23);
+    }
   }
+}
 
-  for (let i = 0; i < 5; i++) {
-    buttons[i].draw(() => {
-      if (i == 4) {
-        simulation.speed = 1;
-      }
+function drawWarMenu() {
+  if (showWarMenu) {
+    stroke(255);
+    strokeWeight(2);
+    fill(0);
+    rect(width * 0.044, height * 0.232, 320, 420);
+    noStroke();
+    fill(255);
+    textSize(22);
+    textAlign(LEFT);
 
-      if (i == 3) {
-        simulation.speed = 50;
-      }
+    text("War Menu", width * 0.048, height * 0.26);
+  
+    for (let i = 0; i < simulation.activeWars.length; i++) {
+      let war = simulation.activeWars[i];
 
-      if (i == 2) {
-        simulation.speed = 100;
-      }
-
-      if (i == 1) {
-        simulation.speed = 250;
-      }
-
-      if (i == 0) {
-        simulation.speed = 500;
-      }
-    });
+      text(war.attackers[0].name + " vs. " + war.defenders[0].name, width * 0.048, height * (0.3 + (i * 0.05)))
+      text("Attackers: " + war.calculatePercentage(true) + "%", width * 0.048, height * (0.33 + (i * 0.05)))
+      text("Defenders: " + war.calculatePercentage(false) + "%", width * 0.048, height * (0.36 + (i * 0.05)))
+    }
   }
 }
