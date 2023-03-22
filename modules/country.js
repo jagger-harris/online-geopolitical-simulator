@@ -22,6 +22,26 @@ class Country {
     return population;
   }
 
+  activeMilitary() {
+    let activeMilitary = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      activeMilitary += this.nodes[i].activeMilitary;
+    }
+
+    return activeMilitary;
+  }
+
+  reserveMilitary() {
+    let reserveMilitary = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      reserveMilitary += this.nodes[i].reserveMilitary;
+    }
+
+    return reserveMilitary;
+  }
+
   fertilityRate() {
     let fertilityRate = 0;
 
@@ -34,6 +54,30 @@ class Country {
     return Math.ceil(averageFertilityRate * 100) / 100;
   }
 
+  mortalityMaleAdults() {
+    let mortalityMaleAdults = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      mortalityMaleAdults += this.nodes[i].mortalityMaleAdults;
+    }
+
+    let averageMortalityMaleAdults = mortalityMaleAdults / this.nodes.length;
+
+    return Math.ceil(averageMortalityMaleAdults * 100) / 100;
+  }
+
+  mortalityFemaleAdults() {
+    let mortalityFemaleAdults = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      mortalityFemaleAdults += this.nodes[i].mortalityFemaleAdults;
+    }
+
+    let averageMortalityFemaleAdults = mortalityFemaleAdults / this.nodes.length;
+
+    return Math.ceil(averageMortalityFemaleAdults * 100) / 100;
+  }
+
   lifespan() {
     let lifespan = 0;
 
@@ -44,6 +88,38 @@ class Country {
     let averageLifespan = lifespan / this.nodes.length;
 
     return Math.ceil(averageLifespan * 100) / 100;
+  }
+
+  democracyIndex() {
+    let democracyIndex = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      democracyIndex += this.nodes[i].democracyIndex;
+    }
+
+    let averageDemocracyIndex = democracyIndex / this.nodes.length;
+
+    return Math.ceil(averageDemocracyIndex * 100) / 100;
+  }
+
+  gdp() {
+    let gdp = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      gdp += this.nodes[i].gdp;
+    }
+
+    return gdp;
+  }
+
+  nuclearWeapons() {
+    let nuclearWeapons = 0;
+
+    for (let i = 0; i < this.nodes.length; i++) {
+      nuclearWeapons += this.nodes[i].nuclearWeapons;
+    }
+
+    return nuclearWeapons;
   }
 
   draw() {

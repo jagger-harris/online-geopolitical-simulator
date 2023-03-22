@@ -290,7 +290,7 @@ function drawCountryMenu() {
     stroke(255);
     strokeWeight(2);
     fill(0);
-    rect(width * 0.044, height * 0.092, 320, 420);
+    rect(width * 0.044, height * 0.092, 325, 420);
     noStroke();
     fill(255);
     textSize(22);
@@ -300,8 +300,15 @@ function drawCountryMenu() {
     if (simulation.selectedCountry) {
       text(simulation.selectedCountry.name, width * 0.048, height * 0.16);
       text("Population: " + simulation.selectedCountry.population().toLocaleString(), width * 0.048, height * 0.19);
-      text("Fertility Rate: " + simulation.selectedCountry.fertilityRate(), width * 0.048, height * 0.22);
-      text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.048, height * 0.25);
+      text("Active Military: " + simulation.selectedCountry.activeMilitary().toLocaleString(), width * 0.048, height * 0.22);
+      text("Reserve Military: " + simulation.selectedCountry.reserveMilitary().toLocaleString(), width * 0.048, height * 0.25);
+      text("Fertility Rate: " + simulation.selectedCountry.fertilityRate(), width * 0.048, height * 0.28);
+      text("Adult Mortality Rate (M): " + simulation.selectedCountry.mortalityMaleAdults(), width * 0.048, height * 0.31);
+      text("Adult Mortality Rate (F): " + simulation.selectedCountry.mortalityFemaleAdults(), width * 0.048, height * 0.34);
+      text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.048, height * 0.37);
+      text("Democracy Index: " + simulation.selectedCountry.democracyIndex(), width * 0.048, height * 0.4);
+      text("GDP: $" + Number(simulation.selectedCountry.gdp().toFixed(2)).toLocaleString(), width * 0.048, height * 0.43);
+      text("Nuclear Weapons: " + simulation.selectedCountry.nuclearWeapons(), width * 0.048, height * 0.46);
     } else {
       text("No Selected Country", width * 0.048, height * 0.16);
     }
@@ -313,7 +320,7 @@ function drawNodeMenu() {
     stroke(255);
     strokeWeight(2);
     fill(0);
-    rect(width * 0.044, height * 0.162, 320, 420);
+    rect(width * 0.044, height * 0.162, 325, 420);
     noStroke();
     fill(255);
     textSize(22);
@@ -324,8 +331,15 @@ function drawNodeMenu() {
     if (simulation.selectedCountry) {
       if (simulation.selectedNode) {
         text("Population: " + simulation.selectedNode.population.toLocaleString(), width * 0.048, height * 0.23);
-        text("Active Miltitary: " + simulation.selectedNode.activeMilitary.toLocaleString(), width * 0.048, height * 0.26);
-        text("Male Mortality Rate: " + simulation.selectedNode.mortalityMaleAdults, width * 0.048, height * 0.29);
+        text("Active Military: " + simulation.selectedNode.activeMilitary.toLocaleString(), width * 0.048, height * 0.26);
+        text("Reserve Military: " + simulation.selectedNode.reserveMilitary.toLocaleString(), width * 0.048, height * 0.29);
+        text("Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.048, height * 0.32);
+        text("Adult Mortality Rate (M): " + simulation.selectedNode.mortalityMaleAdults, width * 0.048, height * 0.35);
+        text("Adult Mortality Rate (F): " + simulation.selectedNode.mortalityFemaleAdults, width * 0.048, height * 0.38);
+        text("Lifespan: " + simulation.selectedNode.lifespan, width * 0.048, height * 0.41);
+        text("Democracy Index: " + simulation.selectedNode.democracyIndex, width * 0.048, height * 0.44);
+        text("GDP: $" + simulation.selectedNode.gdp.toLocaleString(), width * 0.048, height * 0.47);
+        text("Nuclear Weapons: " + simulation.selectedNode.nuclearWeapons, width * 0.048, height * 0.5);
       } else {
         text("No Selected Node", width * 0.048, height * 0.23);
       }
@@ -340,7 +354,7 @@ function drawWarMenu() {
     stroke(255);
     strokeWeight(2);
     fill(0);
-    rect(width * 0.044, height * 0.232, 320, 420);
+    rect(width * 0.044, height * 0.232, 325, 420);
     noStroke();
     fill(255);
     textSize(22);

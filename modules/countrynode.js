@@ -6,24 +6,18 @@ class CountryNode {
     this.size = 2;
     this.point = point;
     this.country = country;
-    this.population = Math.floor(data.population / amount);
+    this.population = Math.ceil(data.population / amount);
     this.activeMilitary = Math.ceil(data.activeMilitary / amount);
     this.reserveMilitary = Math.ceil(data.reserveMilitary / amount);
     this.fertilityRate = data.fertilityRate;
     this.mortalityMaleAdults = data.mortalityMaleAdults;
     this.mortalityFemaleAdults = data.mortalityFemaleAdults;
-    this.mortalityInfants = data.mortalityInfants;
     this.lifespan = data.lifespan;
-    this.nuclearWeapons = Math.ceil(data.nuclearWeapons / amount);
     this.democracyIndex = data.democracyIndex;
-    this.gdp = Math.ceil(data.gdp / amount);
+    this.gdp = Number((data.gdp / amount).toFixed(2));
+    this.nuclearWeapons = Math.floor(data.nuclearWeapons / amount);
     this.selected = false;
     this.captured = false;
-    this.borderVertices = [
-      new Point(this.point.x - 10, this.point.y),
-      new Point(this.point.x + 10, this.point.y),
-      new Point(this.point.x, this.point.y - 10),
-      new Point(this.point.x, this.point.y + 10)]
   }
 
   draw() {
