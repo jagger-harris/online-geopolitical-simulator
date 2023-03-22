@@ -8,6 +8,7 @@ class Simulation {
     this.speed = 500;
     this.landmasses = [];
     this.countries = new Map();
+    this.alliances = [];
     this.time = new Time(day, month, year);
     this.activeWars = [];
   }
@@ -18,7 +19,7 @@ class Simulation {
 
     /* Update country data */
     for (let [key, value] of this.countries) {
-      value.ai.updatePopulation();
+      value.updatePopulation();
     }
 
     /* Handle wars */

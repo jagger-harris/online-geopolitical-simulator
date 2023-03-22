@@ -1,0 +1,63 @@
+{
+  "alliances": [
+    {
+      "name": "NATO",
+      "members": [
+        "USA",
+        "CAN",
+        "DEN",
+        "GBR",
+        "FRA",
+        "PRT",
+        "ESP",
+        "BEL",
+        "NLD",
+        "DEU",
+        "MNP",
+        "ITA",
+        "SVN",
+        "CZE",
+        "SVK",
+        "POL",
+        "HUN",
+        "HRV",
+        "MNE",
+        "ALB",
+        "ROU",
+        "BGR",
+        "MKD",
+        "GRC",
+        "TUR",
+        "LTU",
+        "LVA",
+        "EST"
+      ]
+    },
+    {
+      "name": "Peninsula Shield Force",
+      "members": [
+        "KWT",
+        "NOR",
+        "QAT",
+        "SAU",
+        "ARE"
+      ]
+    },
+    {
+      "name": "NEATO",
+      "members": [
+        "USA",
+        "JAP",
+        "KOR",
+        "TWN"
+      ]
+    },
+    {
+      "name": "Sino-Korean",
+      "members": [
+        "CHN",
+        "PRK"
+      ]
+    }
+  ]
+}
