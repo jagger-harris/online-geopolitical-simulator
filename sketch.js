@@ -110,7 +110,7 @@ function setup() {
 }
 
 function draw() {
-  background(0, 0, 60);
+  background(0, 0, 50);
   stroke(255);
   strokeWeight(2 / zoom);
 
@@ -181,17 +181,17 @@ function createClockButton() {
   clockButton = createButton("");
   setDefaultButtonLooks(clockButton);
   clockButton.size(320, 50);
-  clockButton.position(width * 0.4, height * 0.02);
+  clockButton.position(width * 0.43, height * 0.02);
 }
 
 function createSpeedButtons() {
   let speedButtons = [];
 
-  for (let i = 0; i < 5; i++) {
-    let button = createButton(i + 1);
+  for (let i = 0; i < 4; i++) {
+    let button = createButton("");
     
     setDefaultButtonLooks(button);
-    button.position(width * 0.933 + (i * 60) - 180, height * 0.02);
+    button.position(width * 0.963 + (i * 60) - 180, height * 0.02);
     button.mouseClicked(() => {
       simulation.changeSpeed(i);
       button.style("background-color", "rgb(150, 150, 150)");
@@ -199,6 +199,11 @@ function createSpeedButtons() {
     
     speedButtons.push(button);
   }
+
+  speedButtons[0].html("||");
+  speedButtons[1].html("1");
+  speedButtons[2].html("2");
+  speedButtons[3].html("3");
 }
 
 function createMenuButtons() {

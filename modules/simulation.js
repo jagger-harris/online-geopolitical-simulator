@@ -29,23 +29,19 @@ class Simulation {
   }
 
   changeSpeed(speed) {
+    if (speed == 0) {
+      this.speed = 0;
+    }
+
     if (speed == 1) {
-      this.speed = 500;
+      this.speed = 200;
     }
 
     if (speed == 2) {
-      this.speed = 250;
-    }
-
-    if (speed == 3) {
       this.speed = 100;
     }
 
-    if (speed == 4) {
-      this.speed = 50;
-    }
-
-    if (speed == 5) {
+    if (speed == 3) {
       this.speed = 1;
     }
   }

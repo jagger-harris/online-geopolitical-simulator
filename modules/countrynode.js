@@ -15,7 +15,7 @@ class CountryNode {
     this.lifespan = data.lifespan;
     this.democracyIndex = data.democracyIndex;
     this.gdp = Number((data.gdp / amount).toFixed(2));
-    this.nuclearWeapons = Math.floor(data.nuclearWeapons / amount);
+    this.nuclearWeapons = Math.ceil(data.nuclearWeapons / amount);
     this.selected = false;
     this.captured = false;
   }
