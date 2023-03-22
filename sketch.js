@@ -88,7 +88,8 @@ function setup() {
    * Declare war for testing *DELETE LATER*
    * 
    **/
-  let war = simulation.countries.get("USA").ai.declareWar(simulation.countries.get("CAN"));
+  let war = simulation.countries.get("RUS").ai.declareWar(simulation.countries.get("CAN"));
+  //war.newCountry(true, simulation.countries.get("RUS"));
   simulation.activeWars.push(war);
 
   /* Mouse transformations setup */
@@ -335,16 +336,21 @@ function drawNodeMenu() {
 
     if (simulation.selectedCountry) {
       if (simulation.selectedNode) {
-        text("Population: " + simulation.selectedNode.population.toLocaleString(), width * 0.048, height * 0.23);
-        text("Active Military: " + simulation.selectedNode.activeMilitary.toLocaleString(), width * 0.048, height * 0.26);
-        text("Reserve Military: " + simulation.selectedNode.reserveMilitary.toLocaleString(), width * 0.048, height * 0.29);
-        text("Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.048, height * 0.32);
-        text("Adult Mortality Rate (M): " + simulation.selectedNode.mortalityMaleAdults, width * 0.048, height * 0.35);
-        text("Adult Mortality Rate (F): " + simulation.selectedNode.mortalityFemaleAdults, width * 0.048, height * 0.38);
-        text("Lifespan: " + simulation.selectedNode.lifespan, width * 0.048, height * 0.41);
-        text("Democracy Index: " + simulation.selectedNode.democracyIndex, width * 0.048, height * 0.44);
-        text("GDP: $" + simulation.selectedNode.gdp.toLocaleString(), width * 0.048, height * 0.47);
-        text("Nuclear Weapons: " + simulation.selectedNode.nuclearWeapons, width * 0.048, height * 0.5);
+        text("Country: " + simulation.selectedNode.country.name, width * 0.048, height * 0.23);
+        text("Population: " + simulation.selectedNode.population.toLocaleString(), width * 0.048, height * 0.26);
+        text("Active Military: " + simulation.selectedNode.activeMilitary.toLocaleString(), width * 0.048, height * 0.29);
+        text("Reserve Military: " + simulation.selectedNode.reserveMilitary.toLocaleString(), width * 0.048, height * 0.32);
+        text("Fertility Rate: " + simulation.selectedNode.fertilityRate, width * 0.048, height * 0.35);
+        text("Adult Mortality Rate (M): " + simulation.selectedNode.mortalityMaleAdults, width * 0.048, height * 0.38);
+        text("Adult Mortality Rate (F): " + simulation.selectedNode.mortalityFemaleAdults, width * 0.048, height * 0.41);
+        text("Lifespan: " + simulation.selectedNode.lifespan, width * 0.048, height * 0.44);
+        text("Democracy Index: " + simulation.selectedNode.democracyIndex, width * 0.048, height * 0.47);
+        text("GDP: $" + simulation.selectedNode.gdp.toLocaleString(), width * 0.048, height * 0.5);
+        text("Nuclear Weapons: " + simulation.selectedNode.nuclearWeapons, width * 0.048, height * 0.53);
+        
+        if (simulation.selectedNode.capturer != simulation.selectedNode.country) {
+          text("Capturer: " + simulation.selectedNode.capturer.name, width * 0.048, height * 0.56);
+        }
       } else {
         text("No Selected Node", width * 0.048, height * 0.23);
       }

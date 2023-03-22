@@ -17,16 +17,16 @@ class CountryNode {
     this.gdp = Number((data.gdp / amount).toFixed(2));
     this.nuclearWeapons = Math.ceil(data.nuclearWeapons / amount);
     this.selected = false;
-    this.captured = false;
+    this.capturer = this.country;
   }
 
   draw() {
     if (this.selected) {
       fill(210, 210, 210);
     } else if (this.hover()) {
-      this.captured ? fill(255, 150, 150) : fill(150, 150, 255);
+      this.capturer != this.country ? fill(255, 150, 150) : fill(150, 150, 255);
     } else {
-      this.captured ? fill(255, 100, 100) : fill(100, 100, 255);
+      this.capturer != this.country ? fill(255, 100, 100) : fill(100, 100, 255);
     }
 
     ellipse(this.point.x, this.point.y, this.size, this.size);

@@ -3,6 +3,7 @@
  */
 class Country {
   constructor(data) {
+    this.id = data.id;
     this.name = data.name;
     this.vertices = data.vertices;
     this.ai = new AI(this);
@@ -26,7 +27,13 @@ class Country {
     let activeMilitary = 0;
 
     for (let i = 0; i < this.nodes.length; i++) {
-      activeMilitary += this.nodes[i].activeMilitary;
+      if (this.nodes[i].capturer == this) {
+        activeMilitary += this.nodes[i].activeMilitary;
+      }
+    }
+
+    for (let i = 0; i < this.capturedNodes.length; i++) {
+      activeMilitary += this.capturedNodes[i].activeMilitary;
     }
 
     return activeMilitary;
@@ -129,35 +136,39 @@ class Country {
       if (this.hover()) {
         fill(100);
       } else {
-        simulation.activeWars.forEach(war => {
-          let sameSide = false;
-          let inWar = false;
-          let selectedCountrySameWar = false;
-
-          if (war.attackers.includes(this) || war.defenders.includes(this)) {
-            inWar = true;
-          }
-
-          if (war.attackers.includes(simulation.selectedCountry)) {
-            selectedCountrySameWar = true;
-
-            if (war.attackers.includes(this)) {
-              sameSide = true;
+        if (simulation.activeWars.length < 1) {
+          fill(0);
+        } else {
+          simulation.activeWars.forEach(war => {
+            let sameSide = false;
+            let inWar = false;
+            let selectedCountrySameWar = false;
+  
+            if (war.attackers.includes(this) || war.defenders.includes(this)) {
+              inWar = true;
             }
-          } else if (war.defenders.includes(simulation.selectedCountry)) {
-            selectedCountrySameWar = true;
-
-            if (war.defenders.includes(this)) {
-              sameSide = true;
+  
+            if (war.attackers.includes(simulation.selectedCountry)) {
+              selectedCountrySameWar = true;
+  
+              if (war.attackers.includes(this)) {
+                sameSide = true;
+              }
+            } else if (war.defenders.includes(simulation.selectedCountry)) {
+              selectedCountrySameWar = true;
+  
+              if (war.defenders.includes(this)) {
+                sameSide = true;
+              }
             }
-          }
-
-          if (selectedCountrySameWar && inWar) {
-            sameSide ? fill(100, 100, 255) : fill(255, 100, 100);
-          } else {
-            fill(0);
-          }
-        })
+  
+            if (selectedCountrySameWar && inWar) {
+              sameSide ? fill(100, 100, 255) : fill(255, 100, 100);
+            } else {
+              fill(0);
+            }
+          })
+        }
       }
     }
 

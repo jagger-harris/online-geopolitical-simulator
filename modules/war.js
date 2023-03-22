@@ -3,25 +3,72 @@ class War {
     this.attackers = attackers;
     this.defenders = defenders;
     this.battles = [];
+    this.winners = [];
+    this.losers = [];
     this.over = false;
+    this.pastWar = false;
   }
 
   update() {
-    if (!this.over) {
-      if (this.calculatePercentage(false) > 60) {
-        this.over = true;
-        this.battles = [];
+    if (this.over) {
+      let peaceDecider = this.winners[0];
+      
+      this.winners.forEach(winner => {
+        if (winner.gdp > peaceDecider.gdp) {
+          peaceDecider = winner;
+        }
+      })
 
-        return;
+      if (peaceDecider.democracyIndex() < 4.00) {
+        this.losers.forEach(loser => {
+          loser.nodes.forEach(node => {
+            peaceDecider.nodes.push(node);
+            node.country = peaceDecider;
+            node.capturer = peaceDecider;
+          });
+
+          loser.vertices.forEach(vertices => {
+            peaceDecider.vertices.push(vertices);
+          })
+          simulation.countries.delete(loser.id);
+        });
       }
 
-      this.battles.push(this.newBattle());
-      this.battles.forEach(battle => {
-          if (battle) {
-            battle.update();
-          }
-      })
+      this.winners.forEach(winner => {
+        winner.nodes.forEach(node => {
+          node.capturer = winner;
+        });
+      });
+
+      this.pastWar = true;
+
+      return;
     }
+
+    if (this.calculatePercentage(true) > 60) {
+      this.over = true;
+      this.winners = this.defenders;
+      this.losers = this.attackers;
+      this.battles = [];
+
+      return;
+    }
+
+    if (this.calculatePercentage(false) > 40) {
+      this.over = true;
+      this.winners = this.attackers;
+      this.losers = this.defenders;
+      this.battles = [];
+
+      return;
+    }
+
+    this.battles.push(this.newBattle());
+    this.battles.forEach(battle => {
+      if (battle) {
+        battle.update();
+      }
+    })
   }
 
   calculatePercentage(attackers) {
@@ -33,7 +80,7 @@ class War {
       this.attackers.forEach(attacker => {
         totalAttackerNodeAmount += attacker.nodeAmount;
         attacker.nodes.forEach(node => {
-          if (node.captured) {
+          if (node.capturer != node.country) {
             totalAttackCaptureNodes += 1;
           }
         })
@@ -50,7 +97,7 @@ class War {
       this.defenders.forEach(defender => {
         totalDefenderNodeAmount += defender.nodeAmount;
         defender.nodes.forEach(node => {
-          if (node.captured) {
+          if (node.capturer != node.country) {
             totalDefenderCaptureNodes += 1;
           }
         })
@@ -123,9 +170,9 @@ class Battle {
       this.attackerNode.country.capturedNodes.push(this.defenderNode);
 
       if (this.isCountryNode) {
-        this.defenderNode.captured = false;
+        this.defenderNode.capturer = this.defenderNode.country;
       } else {
-        this.defenderNode.captured = true;
+        this.defenderNode.capturer = this.attackerNode.country;
       }
 
       return;

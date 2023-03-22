@@ -10,7 +10,6 @@ class Simulation {
     this.countries = new Map();
     this.time = new Time(day, month, year);
     this.activeWars = [];
-    this.pastWars = [];
   }
 
   update() {
@@ -24,7 +23,15 @@ class Simulation {
 
     /* Handle wars */
     this.activeWars.forEach(war => {
-      war.update();
+      if (!war.pastWar) {
+        war.update();
+      }
+
+      if (war.pastWar) {
+        this.activeWars = this.activeWars.filter((currentWar) => {
+          return currentWar != war;
+        })
+      }
     })
   }
 
