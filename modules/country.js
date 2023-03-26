@@ -62,8 +62,50 @@ class Country {
 
     let attackers = [this];
     let defenders = [country];
+    let attackersLeader = this;
+    let defendersLeader = country;
+    let attackerAlliances = [];
+    let defenderAlliances = []
 
-    return new War(attackers, defenders);
+    simulation.alliances.forEach(alliance => {
+      if (alliance.members.includes(this.id)) {
+        attackerAlliances.push(alliance);
+      }
+
+      if (alliance.members.includes(country.id)) {
+        defenderAlliances.push(alliance);
+      }
+    })
+
+    attackerAlliances.forEach(alliance => {
+      alliance.members.forEach(memberID => {
+        let country = simulation.countries.get(memberID);
+
+        if (country) {
+          attackers.push(country);
+
+          if (country.gdp() > attackersLeader.gdp()) {
+            attackersLeader = country;
+          }
+        }
+      });
+    });
+
+    defenderAlliances.forEach(alliance => {
+      alliance.members.forEach(memberID => {
+        let country = simulation.countries.get(memberID);
+
+        if (country) {
+          defenders.push(country);
+
+          if (country.gdp() > defendersLeader.gdp()) {
+            defendersLeader = country;
+          }
+        }
+      });
+    });
+
+    return new War(attackers, defenders, attackersLeader, defendersLeader);
   }
 
   population() {

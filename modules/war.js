@@ -1,7 +1,9 @@
 class War {
-  constructor(attackers, defenders) {
+  constructor(attackers, defenders, attackersLeader, defendersLeader) {
     this.attackers = attackers;
     this.defenders = defenders;
+    this.attackersLeader = attackersLeader;
+    this.defendersLeader = defendersLeader;
     this.battles = [];
     this.winners = [];
     this.losers = [];
