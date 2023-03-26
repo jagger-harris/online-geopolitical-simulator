@@ -13,9 +13,7 @@ class Country {
   }
 
   updatePopulation() {
-    for (let i = 0; i < this.nodes.length; i++) {
-      let node = this.nodes[i];
-
+    this.nodes.forEach(node => {
       /* Grow population statistically */
       let averageWomenPopulation = Math.floor(node.population * 0.5);
       let percentageChance = (node.fertilityRate / (8766 * node.lifespan)) * averageWomenPopulation;
@@ -43,7 +41,7 @@ class Country {
       if (random < node.mortalityFemaleAdults / 2000) {
         node.population -= Math.round(averageFemaleDeaths);
       }
-    }
+    });
   }
 
   declareWar(country) {
@@ -81,15 +79,13 @@ class Country {
   activeMilitary() {
     let activeMilitary = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      if (this.nodes[i].capturer == this) {
-        activeMilitary += this.nodes[i].activeMilitary;
+    this.nodes.forEach(node => {
+      if (node.capturer == this) {
+        activeMilitary += node.activeMilitary;
       }
-    }
+    })
 
-    for (let i = 0; i < this.capturedNodes.length; i++) {
-      activeMilitary += this.capturedNodes[i].activeMilitary;
-    }
+    this.capturedNodes.forEach(node => activeMilitary += node.activeMilitary);
 
     return activeMilitary;
   }
@@ -97,9 +93,7 @@ class Country {
   reserveMilitary() {
     let reserveMilitary = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      reserveMilitary += this.nodes[i].reserveMilitary;
-    }
+    this.nodes.forEach(node => reserveMilitary += node.reserveMilitary);
 
     return reserveMilitary;
   }
@@ -107,9 +101,7 @@ class Country {
   fertilityRate() {
     let fertilityRate = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      fertilityRate += this.nodes[i].fertilityRate;
-    }
+    this.nodes.forEach(node => fertilityRate += node.fertilityRate);
 
     let averageFertilityRate = fertilityRate / this.nodes.length;
 
@@ -119,9 +111,7 @@ class Country {
   mortalityMaleAdults() {
     let mortalityMaleAdults = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      mortalityMaleAdults += this.nodes[i].mortalityMaleAdults;
-    }
+    this.nodes.forEach(node => mortalityMaleAdults += node.mortalityMaleAdults);
 
     let averageMortalityMaleAdults = mortalityMaleAdults / this.nodes.length;
 
@@ -131,9 +121,7 @@ class Country {
   mortalityFemaleAdults() {
     let mortalityFemaleAdults = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      mortalityFemaleAdults += this.nodes[i].mortalityFemaleAdults;
-    }
+    this.nodes.forEach(node => mortalityFemaleAdults += node.mortalityFemaleAdults);
 
     let averageMortalityFemaleAdults = mortalityFemaleAdults / this.nodes.length;
 
@@ -143,9 +131,7 @@ class Country {
   lifespan() {
     let lifespan = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      lifespan += this.nodes[i].lifespan;
-    }
+    this.nodes.forEach(node => lifespan += node.lifespan);
 
     let averageLifespan = lifespan / this.nodes.length;
 
@@ -155,9 +141,7 @@ class Country {
   democracyIndex() {
     let democracyIndex = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      democracyIndex += this.nodes[i].democracyIndex;
-    }
+    this.nodes.forEach(node => democracyIndex += node.democracyIndex);
 
     let averageDemocracyIndex = democracyIndex / this.nodes.length;
 
@@ -167,9 +151,7 @@ class Country {
   gdp() {
     let gdp = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      gdp += this.nodes[i].gdp;
-    }
+    this.nodes.forEach(node => gdp += node.gdp);
 
     return gdp;
   }
@@ -177,9 +159,7 @@ class Country {
   nuclearWeapons() {
     let nuclearWeapons = 0;
 
-    for (let i = 0; i < this.nodes.length; i++) {
-      nuclearWeapons += this.nodes[i].nuclearWeapons;
-    }
+    this.nodes.forEach(node => nuclearWeapons += node.nuclearWeapons);
 
     return nuclearWeapons;
   }
@@ -254,15 +234,15 @@ class Country {
   mouseInsideCountry() {
     let inside = false;
 
-    this.vertices.forEach(vertice => {
+    this.vertices.forEach(currentVertex => {
       let i;
       let j;
       let x = (mouseX - offset.x) / zoom;
       let y = (mouseY - offset.y) / zoom;
       let point = new Point(x, y);
 
-      for (i = 0, j = vertice.length - 1; i < vertice.length; j = i++) {
-        if (((vertice[i][1] > point.y) != (vertice[j][1] > point.y)) && (point.x < (vertice[j][0] - vertice[i][0]) * (point.y - vertice[i][1]) / (vertice[j][1] - vertice[i][1]) + vertice[i][0])) {
+      for (i = 0, j = currentVertex.length - 1; i < currentVertex.length; j = i++) {
+        if (((currentVertex[i][1] > point.y) != (currentVertex[j][1] > point.y)) && (point.x < (currentVertex[j][0] - currentVertex[i][0]) * (point.y - currentVertex[i][1]) / (currentVertex[j][1] - currentVertex[i][1]) + currentVertex[i][0])) {
           inside = !inside;
         }
       }
@@ -342,14 +322,9 @@ class Country {
 
     /* Add up all areas and determine percentages */
     let totalArea = 0;
-      
-    for (let i = 0; i < triangleAreas.length; i++) {
-      totalArea += triangleAreas[i];
-    }
 
-    for (let i = 0; i < triangleAreas.length; i++) {
-      areaRatios.push(triangleAreas[i] / totalArea);
-    }
+    triangleAreas.forEach(triangleArea => totalArea += triangleArea);
+    triangleAreas.forEach(triangleArea => areaRatios.push(triangleArea / totalArea));
 
     return areaRatios;
   }

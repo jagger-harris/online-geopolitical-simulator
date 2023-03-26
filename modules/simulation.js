@@ -18,9 +18,7 @@ class Simulation {
     this.time.advance();
 
     /* Update country data */
-    for (let [key, value] of this.countries) {
-      value.updatePopulation();
-    }
+    this.countries.forEach(country => country.updatePopulation());
 
     /* Handle wars */
     this.activeWars.forEach(war => {

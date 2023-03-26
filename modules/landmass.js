@@ -11,13 +11,13 @@ class Landmass {
     fill(0, 0, 0, 0);
     beginShape();
 
-    for (let i = 0; i < this.vertices.length; i++) {
-      let x = this.vertices[i][0];
-      let y = this.vertices[i][1];
-      let currentVertex = new Point(x, y);
+    this.vertices.forEach(currentVertex => {
+      let x = currentVertex[0];
+      let y = currentVertex[1];
+      let newVertex = new Point(x, y);
 
-      vertex(currentVertex.x, currentVertex.y);
-    }
+      vertex(newVertex.x, newVertex.y);
+    });
 
     endShape();
   }

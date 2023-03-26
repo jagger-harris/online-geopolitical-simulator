@@ -30,7 +30,6 @@ let menuButtons = [];
 let showCountryMenu = false;
 let showNodeMenu = false;
 let showWarMenu = false;
-let showAlliancesMenu = false;
 
 function preload() {
   countriesData = loadJSON("data/countries.json");
@@ -48,27 +47,21 @@ function setup() {
   createMenuButtons();
 
   /* Create landmasses from data */
-  for (let data of landmassesData.landmasses) {
-    simulation.landmasses.push(new Landmass(data));
-  }
+  landmassesData.landmasses.forEach(landmass => simulation.landmasses.push(new Landmass(landmass)));
 
   /* Create countries from data */
-  for (let data of countriesData.countries) {
-    simulation.countries.set(data.id, new Country(data));
-  }
+  countriesData.countries.forEach(country => simulation.countries.set(country.id, new Country(country)));
 
   /* Create alliances from data */
-  for (let data of alliancesData.alliances) {
-    simulation.alliances.push(new Alliance(data.name, data.members));
-  }
+  alliancesData.alliances.forEach(alliance => simulation.alliances.push(new Alliance(alliance.name, alliance.members)));
 
   /* Create nodes for all countries */
   let totalNodeAmount = 10000;
   let nodeAmount = [];
   let countryAreas = [];
   
-  for (let [key, value] of simulation.countries) {
-    let triangleAreas = Country.getAreas(value.countryTriangles());
+  simulation.countries.forEach(country => {
+    let triangleAreas = Country.getAreas(country.countryTriangles());
     let totalArea = 0;
 
     triangleAreas.forEach(ratio => {
@@ -76,20 +69,19 @@ function setup() {
     })
 
     countryAreas.push(totalArea);
-  }
+  });
 
   let areaRatios = Country.getAreaRatios(countryAreas);
 
-  for (let ratio of areaRatios) {
-    nodeAmount.push(Math.ceil(totalNodeAmount * ratio));
-  }
+  areaRatios.forEach(ratio => nodeAmount.push(Math.ceil(totalNodeAmount * ratio)));
 
   let counter = 0;
-  for (let [key, value] of simulation.countries) {
-    value.nodes = value.generateNodes(countriesData.countries[counter], nodeAmount[counter]);
-    value.nodeAmount = nodeAmount[counter];
+
+  simulation.countries.forEach(country => {
+    country.nodes = country.generateNodes(countriesData.countries[counter], nodeAmount[counter]);
+    country.nodeAmount = nodeAmount[counter];
     counter += 1;
-  }
+  })
 
   /**
    * 
@@ -151,13 +143,13 @@ function draw() {
 }
 
 function mouseReleased() {
-  for (let [key, value] of simulation.countries) {
-    value.selected = value.mouseInsideCountry();
+  simulation.countries.forEach(country => {
+    country.selected = country.mouseInsideCountry();
 
-    if (value.selected) {
-      simulation.selectedCountry = value;
+    if (country.selected) {
+      simulation.selectedCountry = country;
 
-      for (let node of value.nodes) {
+      for (let node of country.nodes) {
         node.selected = node.mouseInsideNode();
 
         if (node.selected) {
@@ -165,7 +157,7 @@ function mouseReleased() {
         }
       }
     }
-  }
+  });
 }
 
 function windowResized() {
@@ -216,7 +208,7 @@ function createSpeedButtons() {
 }
 
 function createMenuButtons() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 4; i++) {
     let button = createButton("");
 
     if (i != 0) {
@@ -259,7 +251,6 @@ function createMenuButtons() {
     showCountryMenu = !showCountryMenu;
     showNodeMenu = false;
     showWarMenu = false;
-    showAlliancesMenu = false;
     countryMenuButton.style("background-color", "rgb(150, 150, 150)");
   });
 
@@ -269,7 +260,6 @@ function createMenuButtons() {
     showNodeMenu = !showNodeMenu;
     showCountryMenu = false;
     showWarMenu = false;
-    showAlliancesMenu = false;
     nodeMenuButton.style("background-color", "rgb(150, 150, 150)");
   });
 
@@ -279,18 +269,7 @@ function createMenuButtons() {
     showWarMenu = !showWarMenu;
     showCountryMenu = false;
     showNodeMenu = false;
-    showAlliancesMenu = false;
     warMenuButton.style("background-color", "rgb(150, 150, 150)");
-  });
-
-  let alliancesMenuButton = menuButtons[4];
-  alliancesMenuButton.html("🕊️");
-  alliancesMenuButton.mouseClicked(() => {
-    showAlliancesMenu = !showAlliancesMenu;
-    showCountryMenu = false;
-    showNodeMenu = false;
-    showWarMenu = false;
-    alliancesMenuButton.style("background-color", "rgb(150, 150, 150)");
   });
 }
 
@@ -310,7 +289,6 @@ function drawGui() {
   drawCountryMenu();
   drawNodeMenu();
   drawWarMenu();
-  drawAlliancesMenu();
 }
 
 function drawCountryMenu() {
@@ -394,35 +372,13 @@ function drawWarMenu() {
     textAlign(LEFT);
 
     text("War Menu", width * 0.048, height * 0.26);
-  
+
     for (let i = 0; i < simulation.activeWars.length; i++) {
       let war = simulation.activeWars[i];
 
       text(war.attackers[0].name + " vs. " + war.defenders[0].name, width * 0.048, height * (0.3 + (i * 0.05)))
       text("Attackers: " + war.calculatePercentage(true) + "%", width * 0.048, height * (0.33 + (i * 0.05)))
       text("Defenders: " + war.calculatePercentage(false) + "%", width * 0.048, height * (0.36 + (i * 0.05)))
-    }
-  }
-}
-
-function drawAlliancesMenu() {
-  if (showAlliancesMenu) {
-    stroke(255);
-    strokeWeight(2);
-    fill(0);
-    rect(width * 0.044, height * 0.302, 325, 420);
-    noStroke();
-    fill(255);
-    textSize(22);
-    textAlign(LEFT);
-
-    text("Alliances Menu", width * 0.048, height * 0.33);
-    for (let i = 0; i < simulation.activeWars.length; i++) {
-      let war = simulation.activeWars[i];
-
-      text(war.attackers[0].name + " vs. " + war.defenders[0].name, width * 0.048, height * (0.37 + (i * 0.05)))
-      text("Attackers: " + war.calculatePercentage(true) + "%", width * 0.048, height * (0.4 + (i * 0.05)))
-      text("Defenders: " + war.calculatePercentage(false) + "%", width * 0.048, height * (0.43 + (i * 0.05)))
     }
   }
 }
