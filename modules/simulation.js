@@ -45,13 +45,17 @@ class Simulation {
           }
 
           if (warCountry.democracyIndex() > 4) {
-            warProbability += 0.0000005;
+            warProbability += 0.00000005;
           }
 
           if (warCountry.nuclearWeapons() > 0) {
             if (country.nuclearWeapons() < 1) {
-              warProbability -= 0.00001;
+              warProbability -= 0.0000002;
             }
+          }
+
+          if (country.gdp() > warCountry.gdp()) {
+            warProbability += 0.0000001;
           }
 
           let inAlliance = false;
@@ -63,7 +67,7 @@ class Simulation {
           });
 
           if (inAlliance) {
-            warProbability -= 0.0000005;
+            warProbability -= 0.00000005;
           } else {
             warProbability += 0.0000001;
           }
@@ -71,8 +75,26 @@ class Simulation {
           let random = Math.random();
 
           if (random <= warProbability) {
+            simulation.activeWars.forEach(war => {
+              if (!war.attackers.includes(country) && !war.attackers.includes(warCountry)) {
+                return;
+              }
+
+              if (!war.defenders.includes(country) && !war.defenders.includes(warCountry)) {
+                return;
+              }
+
+              if (war.attackers.includes(country) && war.defenders.includes(warCountry)) {
+                return;
+              }
+
+              if (war.attackers.includes(warCountry) && war.defenders.includes(country)) {
+                return;
+              }
+            });
+
             let war = country.declareWar(warCountry);
-            simulation.activeWars.push(war)
+            simulation.activeWars.push(war);
           }
         });
       }
