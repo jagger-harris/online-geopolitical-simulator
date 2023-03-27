@@ -271,7 +271,7 @@ function drawGui() {
   fill(255);
   textSize(20);
   textAlign(LEFT);
-  text("Online Geopolitical Simulator - Jagger Harris 2023 - ALPHA", 20, height * 0.97);
+  text("Online Geopolitical Simulator - Jagger Harris 2023", 20, height * 0.97);
   textAlign(LEFT, CENTER);
   textSize(30);
 
