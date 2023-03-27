@@ -45,21 +45,6 @@ class Country {
   }
 
   declareWar(country) {
-    /**
-     * Reasons countries declare war:
-     * 1. Not democratic countries (democratic peace principle)
-     * 2. Territorial peace theory
-     * 3. Bordered countries tend to declare war
-     * 4. Not allied to larger and more established countries
-     * 5. Resources (to a certain extent, but mainly trade)
-     * 6. Power parity (countries that are stronger tend to attack weaker foe)
-     * 7. Ideological differences
-     * 
-     * Reasons countries do not declare war:
-     * 1. Nuclear deterrence
-     * 2. Capitalism and trade
-     */
-
     let attackers = [this];
     let defenders = [country];
     let attackersLeader = this;

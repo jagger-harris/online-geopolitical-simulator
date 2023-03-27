@@ -76,21 +76,11 @@ function setup() {
   areaRatios.forEach(ratio => nodeAmount.push(Math.ceil(totalNodeAmount * ratio)));
 
   let counter = 0;
-
   simulation.countries.forEach(country => {
     country.nodes = country.generateNodes(countriesData.countries[counter], nodeAmount[counter]);
     country.nodeAmount = nodeAmount[counter];
     counter += 1;
   })
-
-  /**
-   * 
-   * Declare war for testing *DELETE LATER*
-   * 
-   **/
-  let war = simulation.countries.get("RUS").declareWar(simulation.countries.get("CAN"));
-  //war.newCountry(true, simulation.countries.get("RUS"));
-  simulation.activeWars.push(war);
 
   /* Mouse transformations setup */
   offset = createVector(0, 0);
