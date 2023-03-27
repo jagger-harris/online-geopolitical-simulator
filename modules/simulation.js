@@ -40,6 +40,10 @@ class Simulation {
         this.countries.forEach(warCountry => {
           let warProbability = 0;
 
+          if (country == warCountry) {
+            return;
+          }
+
           if (warCountry.democracyIndex() < 4) {
             warProbability += 0.0000001;
           }
