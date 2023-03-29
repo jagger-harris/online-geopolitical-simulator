@@ -2,7 +2,6 @@
  * Raw JSON data
  */
 let countriesData;
-let landmassesData;
 let alliancesData;
 
 /**
@@ -33,7 +32,6 @@ let showWarMenu = false;
 
 function preload() {
   countriesData = loadJSON("data/countries.json");
-  landmassesData = loadJSON("data/landmasses.json");
   alliancesData = loadJSON("data/alliances.json");
 }
 
@@ -136,9 +134,6 @@ function setup() {
     warMenuButton.style("background-color", "rgb(150, 150, 150)");
   });
 
-  /* Create landmasses from data */
-  landmassesData.landmasses.forEach(landmass => simulation.landmasses.push(new Landmass(landmass)));
-
   /* Create countries from data */
   countriesData.countries.forEach(country => simulation.countries.set(country.id, new Country(country)));
 
@@ -213,8 +208,7 @@ function draw() {
     offset.y -= pmouseY - mouseY;
   }
 
-  /* Draw landmasses and countries */
-  simulation.landmasses.forEach(landmass => landmass.draw());
+  /* Draw countries */
   simulation.countries.forEach(country => country.draw());
 
   /* Draw and update GUI */

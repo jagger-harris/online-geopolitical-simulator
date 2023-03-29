@@ -49,7 +49,8 @@ class War {
 
           loser.vertices.forEach(vertices => {
             peaceDecider.vertices.push(vertices);
-          })
+          });
+          
           simulation.countries.delete(loser.id);
         });
       }
