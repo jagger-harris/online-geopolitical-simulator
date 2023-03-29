@@ -361,9 +361,9 @@ function drawWarMenu() {
     for (let i = 0; i < simulation.activeWars.length; i++) {
       let war = simulation.activeWars[i];
 
-      text(war.attackersLeader.name + " vs. " + war.defendersLeader.name, width * 0.048, height * (0.3 + (i * 0.05)));
-      text("Attackers: " + war.calculatePercentage(true) + "%", width * 0.048, height * (0.33 + (i * 0.05)));
-      text("Defenders: " + war.calculatePercentage(false) + "%", width * 0.048, height * (0.36 + (i * 0.05)));
+      text(war.attackersLeader.name + " vs. " + war.defendersLeader.name, width * 0.048, height * (0.3 + (i * 0.1)));
+      text("Attackers: " + war.calculatePercentage(true) + "%", width * 0.048, height * (0.33 + (i * 0.1)));
+      text("Defenders: " + war.calculatePercentage(false) + "%", width * 0.048, height * (0.36 + (i * 0.1)));
     }
   }
 }

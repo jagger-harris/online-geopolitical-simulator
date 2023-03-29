@@ -54,8 +54,6 @@ class CountryNode {
     return this.mouseInsideNode();
   }
 
-  /*  */
-
   /**
    * Checks if mouse is within node circle.
    * Credits: https://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle
