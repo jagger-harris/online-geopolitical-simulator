@@ -107,11 +107,11 @@ class Simulation {
         war.update();
       }
 
-      /*if (war.pastWar) {
+      if (war.pastWar) {
         this.activeWars = this.activeWars.filter((currentWar) => {
           return currentWar != war;
         })
-      }*/
+      }
     });
   }
 
