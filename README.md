@@ -4,7 +4,7 @@ A simple geopolitical simulator designed to simulate basic country conflicts usi
 
 You can view the simulation [here](https://jagger-harris.github.io/online-geopolitical-simulator/).
 
-This uses the p5.js library for graphics as well as other helper libraries (Earcut.js).
+This uses the p5.js library for graphics as well as other helper libraries ([Earcut.js](https://github.com/mapbox/earcut)).
 
 Requires git for testing.
 
