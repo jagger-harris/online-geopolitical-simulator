@@ -31,7 +31,7 @@ class Simulation {
 
     /* Update country data and update country AI*/
     this.countries.forEach(country => {
-      country.updatePopulation();
+      country.update();
 
       if (country.democracyIndex < 4) {
         this.countries.forEach(warCountry => {

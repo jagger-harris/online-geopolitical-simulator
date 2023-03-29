@@ -17,15 +17,31 @@ class Country {
     this.nodeAmount = 0;
     this.nodes = [];
     this.capturedNodes = [];
-    this.gdp = data.gdp;
-    this.democracyIndex = data.democracyIndex;
-    this.nuclearWeapons = data.nuclearWeapons;
+    this.population;
+    this.activeMilitary;
+    this.reserveMilitary;
+    this.fertilityRate;
+    this.mortalityMaleAdults;
+    this.democracyIndex;
+    this.gdp;
+    this.nuclearWeapons;
   }
 
   /**
-   * Update country population based on growth and decay statistics.
+   * Update country and country node information based on statistics.
    */
-  updatePopulation() {
+  update() {
+    let totalPopulation = 0;
+    let totalActiveMilitary = 0;
+    let totalReserveMilitary = 0;
+    let totalFertilityRate = 0;
+    let totalMortalityMaleAdults = 0;
+    let totalMortalityFemaleAdults = 0;
+    let totalLifespan = 0;
+    let totalDemocracyIndex = 0;
+    let totalGdp = 0;
+    let totalNuclearWeapons = 0;
+
     this.nodes.forEach(node => {
       /* Grow population statistically */
       let averageWomenPopulation = Math.floor(node.population * 0.5);
@@ -54,7 +70,29 @@ class Country {
       if (random < node.mortalityFemaleAdults / 2000) {
         node.population -= Math.round(averageFemaleDeaths);
       }
+
+      totalPopulation += node.population;
+      totalActiveMilitary += node.activeMilitary;
+      totalReserveMilitary += node.reserveMilitary;
+      totalFertilityRate += node.fertilityRate;
+      totalMortalityMaleAdults += node.mortalityMaleAdults;
+      totalMortalityFemaleAdults += node.mortalityFemaleAdults;
+      totalLifespan += node.lifespan;
+      totalDemocracyIndex += node.democracyIndex;
+      totalGdp += node.gdp;
+      totalNuclearWeapons += node.nuclearWeapons;
     });
+
+    this.population = totalPopulation;
+    this.activeMilitary = totalActiveMilitary;
+    this.reserveMilitary = totalReserveMilitary;
+    this.fertilityRate = totalFertilityRate / this.nodeAmount;
+    this.mortalityMaleAdults = totalMortalityMaleAdults / this.nodeAmount;
+    this.mortalityFemaleAdults = totalMortalityFemaleAdults / this.nodeAmount;
+    this.lifespan = totalLifespan / this.nodeAmount;
+    this.democracyIndex = totalDemocracyIndex / this.nodeAmount;
+    this.gdp = totalGdp;
+    this.nuclearWeapons = totalNuclearWeapons;
   }
 
   /**

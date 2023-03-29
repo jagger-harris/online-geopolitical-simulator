@@ -290,14 +290,14 @@ function drawCountryMenu() {
 
     if (simulation.selectedCountry) {
       text(simulation.selectedCountry.name, width * 0.048, height * 0.16);
-      text("Population: " + simulation.selectedCountry.population().toLocaleString(), width * 0.048, height * 0.19);
-      text("Active Military: " + simulation.selectedCountry.activeMilitary().toLocaleString(), width * 0.048, height * 0.22);
-      text("Reserve Military: " + simulation.selectedCountry.reserveMilitary().toLocaleString(), width * 0.048, height * 0.25);
-      text("Fertility Rate: " + simulation.selectedCountry.fertilityRate(), width * 0.048, height * 0.28);
-      text("Adult Mortality Rate (M): " + simulation.selectedCountry.mortalityMaleAdults(), width * 0.048, height * 0.31);
-      text("Adult Mortality Rate (F): " + simulation.selectedCountry.mortalityFemaleAdults(), width * 0.048, height * 0.34);
-      text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.048, height * 0.37);
-      text("Democracy Index: " + simulation.selectedCountry.democracyIndex, width * 0.048, height * 0.4);
+      text("Population: " + simulation.selectedCountry.population.toLocaleString(), width * 0.048, height * 0.19);
+      text("Active Military: " + simulation.selectedCountry.activeMilitary.toLocaleString(), width * 0.048, height * 0.22);
+      text("Reserve Military: " + simulation.selectedCountry.reserveMilitary.toLocaleString(), width * 0.048, height * 0.25);
+      text("Fertility Rate: " + simulation.selectedCountry.fertilityRate.toFixed(2), width * 0.048, height * 0.28);
+      text("Adult Mortality Rate (M): " + simulation.selectedCountry.mortalityMaleAdults.toFixed(2), width * 0.048, height * 0.31);
+      text("Adult Mortality Rate (F): " + simulation.selectedCountry.mortalityFemaleAdults.toFixed(2), width * 0.048, height * 0.34);
+      text("Lifespan: " + simulation.selectedCountry.lifespan.toFixed(2), width * 0.048, height * 0.37);
+      text("Democracy Index: " + simulation.selectedCountry.democracyIndex.toFixed(2), width * 0.048, height * 0.4);
       text("GDP: $" + Number(simulation.selectedCountry.gdp.toFixed(2)).toLocaleString(), width * 0.048, height * 0.43);
       text("Nuclear Weapons: " + simulation.selectedCountry.nuclearWeapons, width * 0.048, height * 0.46);
     } else {
