@@ -42,9 +42,99 @@ function setup() {
 
   simulation = new Simulation(1, 1, 2021);
 
-  createClockButton();
-  createSpeedButtons();
-  createMenuButtons();
+  /* Create clock button */
+  clockButton = createButton("");
+  setDefaultButtonLooks(clockButton);
+  clockButton.size(320, 50);
+  clockButton.position(width * 0.42, height * 0.02);
+
+  /* Create speed buttons */
+  let speedButtons = [];
+
+  for (let i = 0; i < 4; i++) {
+    let button = createButton("");
+    
+    setDefaultButtonLooks(button);
+    button.position(width * 0.963 + (i * width * 0.035) - (width * 0.1), height * 0.02);
+    button.mouseClicked(() => {
+      simulation.changeSpeed(i);
+      button.style("background-color", "rgb(150, 150, 150)");
+    });
+    
+    speedButtons.push(button);
+  }
+
+  speedButtons[0].html("||");
+  speedButtons[1].html("1");
+  speedButtons[2].html("2");
+  speedButtons[3].html("3");
+
+  /* Create menu buttons */
+  let menuButtonAmount = 3;
+
+  for (let i = 0; i <= menuButtonAmount; i++) {
+    let button = createButton("");
+
+    if (i != 0) {
+      button.hidden = true;
+      button.hide();
+    }
+
+    setDefaultButtonLooks(button);
+    button.position(width * 0.01, height * (0.02 + (i * 0.07)));
+
+    menuButtons.push(button);
+  }
+
+  let menuButton = menuButtons[0];
+  menuButton.html("≡");
+  menuButton.mouseClicked(() => {
+    for (let i = 0; i < menuButtons.length; i++) {
+      let button = menuButtons[i];
+
+      if (i != 0) {
+        if (button.hidden) {
+          button.hidden = false;
+          button.show();
+        } else {
+          button.hidden = true;
+          showCountryMenu = false;
+          showNodeMenu = false;
+          showWarMenu = false;
+          button.hide();
+        }
+      }
+    }
+
+    menuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+  
+  let countryMenuButton = menuButtons[1];
+  countryMenuButton.html("🏳️");
+  countryMenuButton.mouseClicked(() => {
+    showCountryMenu = !showCountryMenu;
+    showNodeMenu = false;
+    showWarMenu = false;
+    countryMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+
+  let nodeMenuButton = menuButtons[2];
+  nodeMenuButton.html("🔘");
+  nodeMenuButton.mouseClicked(() => {
+    showNodeMenu = !showNodeMenu;
+    showCountryMenu = false;
+    showWarMenu = false;
+    nodeMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
+
+  let warMenuButton = menuButtons[3];
+  warMenuButton.html("⚔️");
+  warMenuButton.mouseClicked(() => {
+    showWarMenu = !showWarMenu;
+    showCountryMenu = false;
+    showNodeMenu = false;
+    warMenuButton.style("background-color", "rgb(150, 150, 150)");
+  });
 
   /* Create landmasses from data */
   landmassesData.landmasses.forEach(landmass => simulation.landmasses.push(new Landmass(landmass)));
@@ -168,101 +258,6 @@ function setDefaultButtonLooks(button) {
   })
 }
 
-function createClockButton() {
-  clockButton = createButton("");
-  setDefaultButtonLooks(clockButton);
-  clockButton.size(320, 50);
-  clockButton.position(width * 0.43, height * 0.02);
-}
-
-function createSpeedButtons() {
-  let speedButtons = [];
-
-  for (let i = 0; i < 4; i++) {
-    let button = createButton("");
-    
-    setDefaultButtonLooks(button);
-    button.position(width * 0.963 + (i * 60) - 180, height * 0.02);
-    button.mouseClicked(() => {
-      simulation.changeSpeed(i);
-      button.style("background-color", "rgb(150, 150, 150)");
-    });
-    
-    speedButtons.push(button);
-  }
-
-  speedButtons[0].html("||");
-  speedButtons[1].html("1");
-  speedButtons[2].html("2");
-  speedButtons[3].html("3");
-}
-
-function createMenuButtons() {
-  for (let i = 0; i < 4; i++) {
-    let button = createButton("");
-
-    if (i != 0) {
-      button.hidden = true;
-      button.hide();
-    }
-
-    setDefaultButtonLooks(button);
-    button.position(width * 0.01, height * (0.02 + (i * 0.07)));
-
-    menuButtons.push(button);
-  }
-
-  let menuButton = menuButtons[0];
-  menuButton.html("≡");
-  menuButton.mouseClicked(() => {
-    for (let i = 0; i < menuButtons.length; i++) {
-      let button = menuButtons[i];
-
-      if (i != 0) {
-        if (button.hidden) {
-          button.hidden = false;
-          button.show();
-        } else {
-          button.hidden = true;
-          showCountryMenu = false;
-          showNodeMenu = false;
-          showWarMenu = false;
-          button.hide();
-        }
-      }
-    }
-
-    menuButton.style("background-color", "rgb(150, 150, 150)");
-  });
-  
-  let countryMenuButton = menuButtons[1];
-  countryMenuButton.html("🏳️");
-  countryMenuButton.mouseClicked(() => {
-    showCountryMenu = !showCountryMenu;
-    showNodeMenu = false;
-    showWarMenu = false;
-    countryMenuButton.style("background-color", "rgb(150, 150, 150)");
-  });
-
-  let nodeMenuButton = menuButtons[2];
-  nodeMenuButton.html("🔘");
-  nodeMenuButton.mouseClicked(() => {
-    showNodeMenu = !showNodeMenu;
-    showCountryMenu = false;
-    showWarMenu = false;
-    nodeMenuButton.style("background-color", "rgb(150, 150, 150)");
-  });
-
-  let warMenuButton = menuButtons[3];
-  warMenuButton.html("⚔️");
-  warMenuButton.mouseClicked(() => {
-    showWarMenu = !showWarMenu;
-    showCountryMenu = false;
-    showNodeMenu = false;
-    warMenuButton.style("background-color", "rgb(150, 150, 150)");
-  });
-}
-
 function drawGui() {
   /* Reset Matrix for GUI */
   resetMatrix();
@@ -302,9 +297,9 @@ function drawCountryMenu() {
       text("Adult Mortality Rate (M): " + simulation.selectedCountry.mortalityMaleAdults(), width * 0.048, height * 0.31);
       text("Adult Mortality Rate (F): " + simulation.selectedCountry.mortalityFemaleAdults(), width * 0.048, height * 0.34);
       text("Lifespan: " + simulation.selectedCountry.lifespan(), width * 0.048, height * 0.37);
-      text("Democracy Index: " + simulation.selectedCountry.democracyIndex(), width * 0.048, height * 0.4);
-      text("GDP: $" + Number(simulation.selectedCountry.gdp().toFixed(2)).toLocaleString(), width * 0.048, height * 0.43);
-      text("Nuclear Weapons: " + simulation.selectedCountry.nuclearWeapons(), width * 0.048, height * 0.46);
+      text("Democracy Index: " + simulation.selectedCountry.democracyIndex, width * 0.048, height * 0.4);
+      text("GDP: $" + Number(simulation.selectedCountry.gdp.toFixed(2)).toLocaleString(), width * 0.048, height * 0.43);
+      text("Nuclear Weapons: " + simulation.selectedCountry.nuclearWeapons, width * 0.048, height * 0.46);
     } else {
       text("No Selected Country", width * 0.048, height * 0.16);
     }

@@ -1,7 +1,14 @@
 /**
- * Country object that represents country data in the simulation
+ * @class Alliance representing a country in the simulation.
+ * 
+ * Used to store country variables and country nodes for the simulation.
  */
 class Country {
+  /**
+   * Creates an instance of a country.
+   * 
+   * @param {JSON} data JSON data of a country.
+   */
   constructor(data) {
     this.id = data.id;
     this.name = data.name;
@@ -10,8 +17,14 @@ class Country {
     this.nodeAmount = 0;
     this.nodes = [];
     this.capturedNodes = [];
+    this.gdp = data.gdp;
+    this.democracyIndex = data.democracyIndex;
+    this.nuclearWeapons = data.nuclearWeapons;
   }
 
+  /**
+   * Update country population based on growth and decay statistics.
+   */
   updatePopulation() {
     this.nodes.forEach(node => {
       /* Grow population statistically */
@@ -44,6 +57,12 @@ class Country {
     });
   }
 
+  /**
+   * Make a country declare war on another country.
+   * 
+   * @param {Country} country Country to declare war on.
+   * @returns A war.
+   */
   declareWar(country) {
     let attackers = [this];
     let defenders = [country];
@@ -69,7 +88,7 @@ class Country {
         if (country) {
           attackers.push(country);
 
-          if (country.gdp() > attackersLeader.gdp()) {
+          if (country.gdp > attackersLeader.gdp) {
             attackersLeader = country;
           }
         }
@@ -83,7 +102,7 @@ class Country {
         if (country) {
           defenders.push(country);
 
-          if (country.gdp() > defendersLeader.gdp()) {
+          if (country.gdp > defendersLeader.gdp) {
             defendersLeader = country;
           }
         }
@@ -93,6 +112,11 @@ class Country {
     return new War(attackers, defenders, attackersLeader, defendersLeader);
   }
 
+  /**
+   * Get total population of a country based on its nodes.
+   * 
+   * @returns Total amount of population.
+   */
   population() {
     let population = 0;
 
@@ -103,6 +127,11 @@ class Country {
     return population;
   }
 
+  /**
+   * Get total active military of a country based on its nodes.
+   * 
+   * @returns Total amount of active military.
+   */
   activeMilitary() {
     let activeMilitary = 0;
 
@@ -117,6 +146,11 @@ class Country {
     return activeMilitary;
   }
 
+  /**
+   * Get total reserve military of a country based on its nodes.
+   * 
+   * @returns Total amount of reserve military.
+   */
   reserveMilitary() {
     let reserveMilitary = 0;
 
@@ -125,6 +159,11 @@ class Country {
     return reserveMilitary;
   }
 
+  /**
+   * Get average fertility rate of a country.
+   * 
+   * @returns Average total fertility rate.
+   */
   fertilityRate() {
     let fertilityRate = 0;
 
@@ -135,6 +174,11 @@ class Country {
     return Math.ceil(averageFertilityRate * 100) / 100;
   }
 
+  /**
+   * Get average mortality rate for male adults of a country.
+   * 
+   * @returns Average total mortality rate for male adults.
+   */
   mortalityMaleAdults() {
     let mortalityMaleAdults = 0;
 
@@ -145,6 +189,11 @@ class Country {
     return Math.ceil(averageMortalityMaleAdults * 100) / 100;
   }
 
+  /**
+   * Get average mortality rate for female adults of a country.
+   * 
+   * @returns Average total mortality rate for female adults.
+   */
   mortalityFemaleAdults() {
     let mortalityFemaleAdults = 0;
 
@@ -155,6 +204,11 @@ class Country {
     return Math.ceil(averageMortalityFemaleAdults * 100) / 100;
   }
 
+  /**
+   * Get average lifespan of a country.
+   * 
+   * @returns Average total lifespan.
+   */
   lifespan() {
     let lifespan = 0;
 
@@ -165,32 +219,9 @@ class Country {
     return Math.ceil(averageLifespan * 100) / 100;
   }
 
-  democracyIndex() {
-    let democracyIndex = 0;
-
-    this.nodes.forEach(node => democracyIndex += node.democracyIndex);
-
-    let averageDemocracyIndex = democracyIndex / this.nodes.length;
-
-    return Math.ceil(averageDemocracyIndex * 100) / 100;
-  }
-
-  gdp() {
-    let gdp = 0;
-
-    this.nodes.forEach(node => gdp += node.gdp);
-
-    return gdp;
-  }
-
-  nuclearWeapons() {
-    let nuclearWeapons = 0;
-
-    this.nodes.forEach(node => nuclearWeapons += node.nuclearWeapons);
-
-    return nuclearWeapons;
-  }
-
+  /**
+   * Draw the country on to the screen.
+   */
   draw() {
     if (simulation.selectedCountry == this) {
       fill(100, 100, 255);
@@ -253,11 +284,21 @@ class Country {
     }
   }
 
+  /**
+   * Checks if the mouse is above a country.
+   * 
+   * @returns True if mouse is hovering above a country.
+   */
   hover() {
     return this.mouseInsideCountry();
   }
-
-  /* https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon */
+  
+  /**
+   * Checks if mouse is within country vertices.
+   * Credits: https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
+   * 
+   * @returns True if mouse is inside country vertices.
+   */
   mouseInsideCountry() {
     let inside = false;
 
@@ -278,10 +319,22 @@ class Country {
     return inside;
   }
 
+  /**
+   * Generate an array of nodes for a country.
+   * 
+   * @param {JSON} data JSON data for country.
+   * @param {number} amount Amount of nodes to be generated.
+   * @returns Array of nodes.
+   */
   generateNodes(data, amount) {
     return CountryNode.create(this, data, amount, this.countryTriangles());
   }
 
+  /**
+   * Generates the triangulation of a country vertices.
+   * 
+   * @returns Triangulation of a country in an array.
+   */
   countryTriangles() {
     let indices;
     let triangles = [];
@@ -322,6 +375,12 @@ class Country {
     return triangles;
   }
 
+  /**
+   * Get the areas of given triangles.
+   * 
+   * @param {Array.<Point>} trianglePoints Array of triangles to get the areas.
+   * @returns An array of areas.
+   */
   static getAreas(trianglePoints) {
     let triangleAreas = [];
 
@@ -344,6 +403,12 @@ class Country {
     return triangleAreas;
   }
 
+  /**
+   * Get area ratios from the total areas.
+   * 
+   * @param {Array.<number>} triangleAreas Array of areas to determine ratios.
+   * @returns Area ratios of triangleAreas.
+   */
   static getAreaRatios(triangleAreas) {
     const areaRatios = [];
 

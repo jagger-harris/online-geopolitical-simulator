@@ -1,7 +1,17 @@
 /**
- * Object that is essential to simulation, country data are represented by this
+ * @class Node representing data of a given country.
+ * 
+ * Used to store country information and basis for the simulation.
  */
 class CountryNode {
+  /**
+   * Creates an instance of a node for a country.
+   * 
+   * @param {Country} country The country which the node is parented.
+   * @param {JSON} data Country JSON data.
+   * @param {number} amount Amount of nodes needed to be generated for a country.
+   * @param {Point} point Point where the node is located on the screen.
+   */
   constructor(country, data, amount, point) {
     this.size = 2;
     this.point = point;
@@ -20,6 +30,9 @@ class CountryNode {
     this.capturer = this.country;
   }
 
+  /**
+   * Draw the node.
+   */
   draw() {
     if (this.selected) {
       fill(210, 210, 210);
@@ -32,11 +45,23 @@ class CountryNode {
     ellipse(this.point.x, this.point.y, this.size, this.size);
   }
 
+  /**
+   * Checks if the mouse is above a node.
+   * 
+   * @returns True if mouse is hovering above a node.
+   */
   hover() {
     return this.mouseInsideNode();
   }
 
-  /* https://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle */
+  /*  */
+
+  /**
+   * Checks if mouse is within node circle.
+   * Credits: https://math.stackexchange.com/questions/198764/how-to-know-if-a-point-is-inside-a-circle
+   * 
+   * @returns True if mouse is inside node circle.
+   */
   mouseInsideNode() {
     let mX = (mouseX - offset.x) / zoom;
     let mY = (mouseY - offset.y) / zoom;
@@ -52,6 +77,15 @@ class CountryNode {
     return false;
   }
 
+  /**
+   * Generate an array of country nodes.
+   * 
+   * @param {Country} country Country which nodes are located in.
+   * @param {JSON} data JSON data.
+   * @param {number} amount Amount of nodes to be generated.
+   * @param {Array.<Point>} trianglePoints Array of triangle points of a country.
+   * @returns An array of generated country nodes.
+   */
   static create(country, data, amount, trianglePoints) {
     return Array.from(Array(amount), () => {
       let areaRatios = Country.getAreaRatios(Country.getAreas(trianglePoints));

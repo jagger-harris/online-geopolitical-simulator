@@ -1,9 +1,18 @@
 const Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /**
- * Time object for simulation that contains the hour, day, month, and year
+ * @class Time representing simulation time.
+ * 
+ * Used for the simulation clock at the top of the program.
  */
 class Time {
+  /**
+   * Creates an instance of time for a simulation.
+   * 
+   * @param {number} day Starting day.
+   * @param {number} month Starting month.
+   * @param {number} year Starting year.
+   */
   constructor(day, month, year) {
     this.hour = 0;
     this.day = day;
@@ -11,6 +20,11 @@ class Time {
     this.year = year;
   }
 
+  /**
+   * Converts time to readable string.
+   * 
+   * @returns Readable string for time.
+   */
   toString() {
     let hourString = this.hour;
     
@@ -21,6 +35,9 @@ class Time {
     return this.day + " " + Months[this.month - 1] + ", " + this.year + ", " + hourString + ":00";
   }
 
+  /**
+   * Advances the time.
+   */
   advance() {
     this.hour++
 
@@ -40,7 +57,14 @@ class Time {
     }
   }
 
-  /* http://www.dispersiondesign.com/articles/time/number_of_days_in_a_month */
+  /**
+   * Gets the days in a month.
+   * Credits: http://www.dispersiondesign.com/articles/time/number_of_days_in_a_month
+   * 
+   * @param {number} year The year of the month.
+   * @param {number} month The month.
+   * @returns Days of the given month in a given year.
+   */
   daysInMonth(year, month) {
     let isLeapYear = ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 

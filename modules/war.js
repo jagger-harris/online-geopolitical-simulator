@@ -1,4 +1,17 @@
+/**
+ * @class War representing a war in the simulation.
+ * 
+ * Used for tracking wars in the simulation and updating them.
+ */
 class War {
+  /**
+   * Creates an instance of a war.
+   * 
+   * @param {Array.<Country>} attackers Countries who started the war.
+   * @param {Array.<Country>} defenders Countries on the receiving end of a war.
+   * @param {Country} attackersLeader War leader on attacker side.
+   * @param {Country} defendersLeader War leader on defender side.
+   */
   constructor(attackers, defenders, attackersLeader, defendersLeader) {
     this.attackers = attackers;
     this.defenders = defenders;
@@ -11,6 +24,11 @@ class War {
     this.pastWar = false;
   }
 
+  /**
+   * Update the given war.
+   * 
+   * @returns Void if should not update.
+   */
   update() {
     if (this.over) {
       let peaceDecider = this.winners[0];
@@ -21,7 +39,7 @@ class War {
         }
       })
 
-      if (peaceDecider.democracyIndex() < 4.00) {
+      if (peaceDecider.democracyIndex < 4.00) {
         this.losers.forEach(loser => {
           loser.nodes.forEach(node => {
             peaceDecider.nodes.push(node);
@@ -73,6 +91,12 @@ class War {
     })
   }
 
+  /**
+   * Calculate the percentage of nodes taken in a war.
+   * 
+   * @param {boolean} attackers Checks if determining percentage for attackers or defenders.
+   * @returns Percentage of taken nodes.
+   */
   calculatePercentage(attackers) {
     if (attackers) {
       let totalPercentageOfAttackers;
@@ -111,10 +135,21 @@ class War {
     }
   }
 
+  /**
+   * Add new country to the war.
+   * 
+   * @param {boolean} isAttacker Is the country on the attackers side.
+   * @param {Country} country Country to add to the war.
+   */
   newCountry(isAttacker, country) {
     isAttacker ? this.attackers.push(country) : this.defenders.push(country);
   }
 
+  /**
+   * Create a new battle within a war.
+   * 
+   * @returns Battle.
+   */
   newBattle() {
     let attacker = this.attackers[Math.floor(Math.random() * this.attackers.length)];
     let defender = this.defenders[Math.floor(Math.random() * this.defenders.length)];
@@ -144,7 +179,19 @@ class War {
   }
 }
 
+/**
+ * @class Battle representing an attack on a single node.
+ * 
+ * Used for tracking a node attacking a single node and updating information.
+ */
 class Battle {
+  /**
+   * Creates an instance of a battle.
+   * 
+   * @param {CountryNode} attackerNode The node that is attacking another.
+   * @param {CountryNode} defenderNode The node on receiving end.
+   * @param {boolean} isCountryNode Is the attacking country taking its own node.
+   */
   constructor(attackerNode, defenderNode, isCountryNode) {
     this.attackerNode = attackerNode;
     this.defenderNode = defenderNode;
@@ -152,6 +199,11 @@ class Battle {
     this.over = false;
   }
 
+  /**
+   * Update the given battle.
+   * 
+   * @returns Void if battle is over.
+   */
   update() {
     if (this.over) {
       return;

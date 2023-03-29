@@ -1,12 +1,22 @@
 /**
- * Landmass object that gets and draws landmasses
+ * @class Landmass representing a non-changing border.
+ * 
+ * Used to determine border changes during peace deals.
  */
 class Landmass {
+  /**
+   * Creates an instance of a landmass.
+   * 
+   * @param {JSON} data Landmass JSON data.
+   */
   constructor(data) {
     this.name = data.name;
     this.vertices = data.vertices;
   }
 
+  /**
+   * Draw the landmass.
+   */
   draw() {
     fill(0, 0, 0, 0);
     beginShape();
